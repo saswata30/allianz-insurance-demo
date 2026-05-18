@@ -14,7 +14,12 @@
               "Govt Bond / Corp Bond IG / Corp Bond HY / Equity / Real Estate / MMF / Mortgage."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "instrument",
+              "asset type",
+              "asset category"
+            ]
           },
           {
             "column_name": "avg_duration_yrs",
@@ -22,7 +27,11 @@
               "Average modified duration in years."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "duration",
+              "modified duration"
+            ]
           },
           {
             "column_name": "avg_esg_score",
@@ -30,7 +39,12 @@
               "Average ESG score (0-100)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "ESG",
+              "ESG score",
+              "sustainability score"
+            ]
           },
           {
             "column_name": "avg_yield_pct",
@@ -38,7 +52,12 @@
               "Weighted average yield (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "yield",
+              "return",
+              "coupon"
+            ]
           },
           {
             "column_name": "book_value_usd",
@@ -46,7 +65,12 @@
               "Total book value, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "BV",
+              "book value",
+              "carrying value"
+            ]
           },
           {
             "column_name": "market_value_usd",
@@ -54,7 +78,11 @@
               "Total market value, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "MV",
+              "market value"
+            ]
           },
           {
             "column_name": "position_count",
@@ -70,7 +98,12 @@
               "Credit rating (AAA\u2026CCC/NotRated)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "credit rating",
+              "S&P rating",
+              "Moody's rating"
+            ]
           }
         ]
       },
@@ -86,7 +119,12 @@
               "Active in-force policies."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "active policies",
+              "in-force policies",
+              "inforce count"
+            ]
           },
           {
             "column_name": "avg_premium_per_policy",
@@ -102,7 +140,11 @@
               "Average claim severity, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "severity",
+              "average severity"
+            ]
           },
           {
             "column_name": "avg_underwriter_score",
@@ -110,7 +152,11 @@
               "Average underwriter quality score."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "UW score",
+              "underwriting score"
+            ]
           },
           {
             "column_name": "cat_claim_count",
@@ -126,7 +172,12 @@
               "Total claims for this LOB/product."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "claims",
+              "number of claims",
+              "claim volume"
+            ]
           },
           {
             "column_name": "claim_frequency_per_100",
@@ -134,7 +185,12 @@
               "Claims per 100 active policies."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "frequency",
+              "freq per 100",
+              "frequency per 100 policies"
+            ]
           },
           {
             "column_name": "fraud_claim_count",
@@ -150,7 +206,13 @@
               "Total incurred loss, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "losses",
+              "incurred",
+              "incurred losses",
+              "loss"
+            ]
           },
           {
             "column_name": "inforce_premium_usd",
@@ -158,7 +220,13 @@
               "In-force annual premium, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "IFP",
+              "in-force premium",
+              "inforce premium",
+              "earned premium"
+            ]
           },
           {
             "column_name": "inforce_sum_insured_usd",
@@ -166,7 +234,11 @@
               "In-force sum insured (TIV), USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "inforce TIV",
+              "in-force TIV"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -174,7 +246,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "loss_ratio",
@@ -182,7 +260,11 @@
               "Incurred loss / inforce premium (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "LR",
+              "loss-to-premium ratio"
+            ]
           },
           {
             "column_name": "product",
@@ -190,7 +272,13 @@
               "Sub-line product."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "sub-line",
+              "sub_line",
+              "subline",
+              "product line"
+            ]
           }
         ]
       },
@@ -206,7 +294,11 @@
               "Catastrophe event ID (PK)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "event ID",
+              "catastrophe ID"
+            ]
           },
           {
             "column_name": "event_time_utc",
@@ -214,7 +306,11 @@
               "Event timestamp (UTC)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "event time",
+              "occurrence time"
+            ]
           },
           {
             "column_name": "event_type",
@@ -222,7 +318,12 @@
               "Earthquake / TropicalCyclone / Flood / Wildfire / Drought / Volcanic / Other."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "alert type",
+              "warning type",
+              "peril type"
+            ]
           },
           {
             "column_name": "latitude",
@@ -246,7 +347,13 @@
               "Probable maximum loss estimate, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "PML",
+              "probable maximum loss",
+              "max loss",
+              "PML estimate"
+            ]
           },
           {
             "column_name": "severity",
@@ -254,7 +361,12 @@
               "GDACS severity (low / moderate / high)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "alert severity",
+              "level",
+              "intensity"
+            ]
           },
           {
             "column_name": "severity_factor",
@@ -262,7 +374,12 @@
               "Peril-specific severity factor (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "severity factor",
+              "loss factor",
+              "scenario factor"
+            ]
           },
           {
             "column_name": "state_code",
@@ -270,7 +387,11 @@
               "Affected US state code."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "US state"
+            ]
           },
           {
             "column_name": "state_tiv_usd",
@@ -278,7 +399,11 @@
               "State-level TIV at risk, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "state TIV",
+              "state exposure"
+            ]
           },
           {
             "column_name": "title",
@@ -286,7 +411,11 @@
               "Event title."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "event name",
+              "headline"
+            ]
           }
         ]
       },
@@ -302,7 +431,11 @@
               "Cat code if claim is part of a designated catastrophe."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "cat code",
+              "event code"
+            ]
           },
           {
             "column_name": "claim_id",
@@ -310,7 +443,12 @@
               "Unique claim identifier (PK)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "claim number",
+              "claim",
+              "loss number"
+            ]
           },
           {
             "column_name": "claim_status",
@@ -318,7 +456,11 @@
               "Open / Approved / Denied / Closed / Litigation."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "status",
+              "claim state"
+            ]
           },
           {
             "column_name": "cresta_zone",
@@ -326,7 +468,12 @@
               "CRESTA accumulation zone."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "CRESTA",
+              "accumulation zone",
+              "cat zone"
+            ]
           },
           {
             "column_name": "customer_type",
@@ -334,7 +481,11 @@
               "Individual / Business."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "client type",
+              "customer category"
+            ]
           },
           {
             "column_name": "fraud_flag",
@@ -342,7 +493,12 @@
               "True if fraud is suspected."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "fraud",
+              "fraud suspected",
+              "SIU referral"
+            ]
           },
           {
             "column_name": "incurred_amount_usd",
@@ -350,7 +506,12 @@
               "Incurred loss amount, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "incurred",
+              "incurred loss",
+              "loss amount"
+            ]
           },
           {
             "column_name": "is_cat",
@@ -358,7 +519,12 @@
               "True if this claim is part of a catastrophe event."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "catastrophe",
+              "cat claim",
+              "CAT flag"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -366,7 +532,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "loss_date",
@@ -374,7 +546,12 @@
               "Date of loss."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "date of loss",
+              "DOL",
+              "occurrence date"
+            ]
           },
           {
             "column_name": "loyalty_tier",
@@ -382,7 +559,12 @@
               "Bronze / Silver / Gold / Platinum."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "tier",
+              "customer tier",
+              "membership level"
+            ]
           },
           {
             "column_name": "net_paid_usd",
@@ -390,7 +572,11 @@
               "Paid minus salvage and subrogation, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "net paid",
+              "paid net of recoveries"
+            ]
           },
           {
             "column_name": "paid_amount_usd",
@@ -398,7 +584,11 @@
               "Paid loss amount, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "paid",
+              "paid amount"
+            ]
           },
           {
             "column_name": "peril",
@@ -406,7 +596,12 @@
               "Insured peril (e.g. Fire, Wind, Theft, Cyber)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "cause of loss",
+              "hazard",
+              "coverage type"
+            ]
           },
           {
             "column_name": "policy_id",
@@ -414,7 +609,12 @@
               "Policy this claim was made against (FK)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "policy number",
+              "policy",
+              "contract number"
+            ]
           },
           {
             "column_name": "product",
@@ -422,7 +622,13 @@
               "Sub-line product."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "sub-line",
+              "sub_line",
+              "subline",
+              "product line"
+            ]
           },
           {
             "column_name": "region",
@@ -430,7 +636,11 @@
               "US Census region."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "US region",
+              "geographic region"
+            ]
           },
           {
             "column_name": "report_date",
@@ -438,7 +648,12 @@
               "Date the claim was reported."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "reported date",
+              "DOR",
+              "notification date"
+            ]
           },
           {
             "column_name": "report_lag_days",
@@ -446,7 +661,13 @@
               "Days between loss and report (claim ops KPI)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "reporting lag",
+              "claim lag",
+              "DOR-DOL",
+              "report delay"
+            ]
           },
           {
             "column_name": "reserve_amount_usd",
@@ -454,7 +675,12 @@
               "Case reserve held, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "reserves",
+              "case reserves",
+              "outstanding"
+            ]
           },
           {
             "column_name": "severity_pct_of_sum_insured",
@@ -462,7 +688,12 @@
               "Incurred / sum insured ratio (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "severity %",
+              "loss severity",
+              "severity ratio"
+            ]
           },
           {
             "column_name": "state_code",
@@ -470,7 +701,11 @@
               "Two-letter US state code."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "US state"
+            ]
           }
         ]
       },
@@ -486,7 +721,11 @@
               "NOAA alert ID (PK)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "alert",
+              "warning ID"
+            ]
           },
           {
             "column_name": "effective_utc",
@@ -494,7 +733,12 @@
               "When the alert becomes effective (UTC)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "start time",
+              "effective time",
+              "alert start"
+            ]
           },
           {
             "column_name": "event_type",
@@ -502,7 +746,12 @@
               "NOAA event type (e.g. Tornado Warning, Flash Flood Warning)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "alert type",
+              "warning type",
+              "peril type"
+            ]
           },
           {
             "column_name": "expires_utc",
@@ -510,7 +759,12 @@
               "When the alert expires (UTC)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "end time",
+              "expiry",
+              "alert end"
+            ]
           },
           {
             "column_name": "exposed_policy_count",
@@ -518,7 +772,11 @@
               "Allianz policies exposed to this alert."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "exposed policies",
+              "affected policies"
+            ]
           },
           {
             "column_name": "exposed_tiv_usd",
@@ -526,7 +784,12 @@
               "Allianz TIV exposed to this alert, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "exposed TIV",
+              "TIV at risk",
+              "exposed exposure"
+            ]
           },
           {
             "column_name": "severity",
@@ -534,7 +797,12 @@
               "Severity label (Extreme/Severe/Moderate/Minor/Unknown)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "alert severity",
+              "level",
+              "intensity"
+            ]
           },
           {
             "column_name": "state_code",
@@ -542,7 +810,11 @@
               "Affected US state code."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "US state"
+            ]
           },
           {
             "column_name": "state_name",
@@ -550,7 +822,11 @@
               "Affected US state name."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "state name"
+            ]
           },
           {
             "column_name": "urgency",
@@ -558,7 +834,10 @@
               "Urgency label (Immediate/Expected/Future/Past/Unknown)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "urgency level"
+            ]
           }
         ]
       },
@@ -574,7 +853,12 @@
               "Annual premium aggregated, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "premium",
+              "AP",
+              "annual premium"
+            ]
           },
           {
             "column_name": "cresta_zone",
@@ -582,7 +866,12 @@
               "CRESTA zone identifier."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "CRESTA",
+              "accumulation zone",
+              "cat zone"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -590,7 +879,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "policy_count",
@@ -598,7 +893,11 @@
               "Number of policies in the slice."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "policies",
+              "number of policies"
+            ]
           },
           {
             "column_name": "product",
@@ -606,7 +905,13 @@
               "Sub-line product."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "sub-line",
+              "sub_line",
+              "subline",
+              "product line"
+            ]
           },
           {
             "column_name": "region",
@@ -614,7 +919,11 @@
               "US Census region."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "US region",
+              "geographic region"
+            ]
           },
           {
             "column_name": "state_code",
@@ -622,7 +931,11 @@
               "US state code."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "US state"
+            ]
           },
           {
             "column_name": "total_insured_value_usd",
@@ -630,7 +943,14 @@
               "Sum insured aggregated, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "TIV",
+              "sum insured",
+              "SI",
+              "exposure",
+              "insured value"
+            ]
           }
         ]
       },
@@ -646,7 +966,11 @@
               "Distribution channel."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "distribution channel",
+              "sales channel"
+            ]
           },
           {
             "column_name": "claim_count",
@@ -654,7 +978,12 @@
               "Claims booked in the segment."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "claims",
+              "number of claims",
+              "claim volume"
+            ]
           },
           {
             "column_name": "combined_ratio",
@@ -662,7 +991,12 @@
               "Segment combined ratio (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "CR",
+              "combined",
+              "combined ratio %"
+            ]
           },
           {
             "column_name": "commission_usd",
@@ -670,7 +1004,11 @@
               "Commission for the segment, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "commission",
+              "brokerage"
+            ]
           },
           {
             "column_name": "customer_type",
@@ -678,7 +1016,11 @@
               "Individual / Business."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "client type",
+              "customer category"
+            ]
           },
           {
             "column_name": "expense_ratio",
@@ -686,7 +1028,11 @@
               "Segment expense ratio (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "ER",
+              "expense-to-premium ratio"
+            ]
           },
           {
             "column_name": "gross_premium_usd",
@@ -694,7 +1040,12 @@
               "GWP for the segment, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "GWP",
+              "gross premium",
+              "premium"
+            ]
           },
           {
             "column_name": "incurred_loss_usd",
@@ -702,7 +1053,13 @@
               "Incurred loss for the segment, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "losses",
+              "incurred",
+              "incurred losses",
+              "loss"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -710,7 +1067,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "loss_ratio",
@@ -718,7 +1081,11 @@
               "Segment loss ratio (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "LR",
+              "loss-to-premium ratio"
+            ]
           },
           {
             "column_name": "net_premium_usd",
@@ -734,7 +1101,13 @@
               "Sub-line product."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "sub-line",
+              "sub_line",
+              "subline",
+              "product line"
+            ]
           },
           {
             "column_name": "state_code",
@@ -742,7 +1115,11 @@
               "US state code."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "US state"
+            ]
           }
         ]
       },
@@ -758,7 +1135,11 @@
               "Average claim severity, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "severity",
+              "average severity"
+            ]
           },
           {
             "column_name": "cat_claim_count",
@@ -782,7 +1163,12 @@
               "Cat incurred / total incurred (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "cat share",
+              "CAT %",
+              "catastrophe share"
+            ]
           },
           {
             "column_name": "claim_count",
@@ -790,7 +1176,12 @@
               "Number of claims for this peril."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "claims",
+              "number of claims",
+              "claim volume"
+            ]
           },
           {
             "column_name": "distinct_lobs",
@@ -806,7 +1197,12 @@
               "95th-percentile claim severity, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "p95 severity",
+              "95th percentile severity",
+              "p95"
+            ]
           },
           {
             "column_name": "peril",
@@ -814,7 +1210,12 @@
               "Insured peril."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "cause of loss",
+              "hazard",
+              "coverage type"
+            ]
           },
           {
             "column_name": "total_incurred_usd",
@@ -838,7 +1239,11 @@
               "Channel of the writing agent."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "agent distribution",
+              "agent channel"
+            ]
           },
           {
             "column_name": "agent_specialty_lob",
@@ -854,7 +1259,12 @@
               "Annual premium written, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "premium",
+              "AP",
+              "annual premium"
+            ]
           },
           {
             "column_name": "channel",
@@ -862,7 +1272,11 @@
               "Distribution channel: Agent/Broker/Direct/Digital/Aggregator."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "distribution channel",
+              "sales channel"
+            ]
           },
           {
             "column_name": "credit_score",
@@ -870,7 +1284,11 @@
               "Customer credit score."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "FICO",
+              "credit"
+            ]
           },
           {
             "column_name": "cresta_zone",
@@ -878,7 +1296,12 @@
               "CRESTA accumulation zone."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "CRESTA",
+              "accumulation zone",
+              "cat zone"
+            ]
           },
           {
             "column_name": "customer_id",
@@ -886,7 +1309,12 @@
               "Customer PK."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "client id",
+              "insured id",
+              "customer number"
+            ]
           },
           {
             "column_name": "customer_type",
@@ -894,7 +1322,11 @@
               "Individual / Business."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "client type",
+              "customer category"
+            ]
           },
           {
             "column_name": "deductible_usd",
@@ -902,7 +1334,12 @@
               "Per-claim deductible, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "deductible",
+              "excess",
+              "retention"
+            ]
           },
           {
             "column_name": "effective_date",
@@ -910,7 +1347,12 @@
               "Policy effective date."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "start date",
+              "inception date",
+              "policy start"
+            ]
           },
           {
             "column_name": "expiration_date",
@@ -918,7 +1360,12 @@
               "Policy expiration date."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "expiry date",
+              "policy end",
+              "renewal date"
+            ]
           },
           {
             "column_name": "flood_zone",
@@ -926,7 +1373,11 @@
               "FEMA flood zone X/A/AE/V."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "FEMA zone",
+              "flood designation"
+            ]
           },
           {
             "column_name": "income_bracket",
@@ -934,7 +1385,11 @@
               "Customer income bracket."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "income segment",
+              "income band"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -942,7 +1397,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "lob_code",
@@ -950,7 +1411,10 @@
               "2-letter LOB code PL/CL/SP."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB code"
+            ]
           },
           {
             "column_name": "loyalty_tier",
@@ -958,7 +1422,12 @@
               "Bronze / Silver / Gold / Platinum."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "tier",
+              "customer tier",
+              "membership level"
+            ]
           },
           {
             "column_name": "policy_id",
@@ -966,7 +1435,12 @@
               "Unique policy identifier (PK)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "policy number",
+              "policy",
+              "contract number"
+            ]
           },
           {
             "column_name": "policy_status",
@@ -974,7 +1448,11 @@
               "Active / Lapsed / Cancelled / Pending."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "status",
+              "policy state"
+            ]
           },
           {
             "column_name": "product",
@@ -982,7 +1460,13 @@
               "Sub-line product e.g. Auto, Home, Cyber."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "sub-line",
+              "sub_line",
+              "subline",
+              "product line"
+            ]
           },
           {
             "column_name": "region",
@@ -990,7 +1474,11 @@
               "US Census region (Northeast/South/Midwest/West)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "US region",
+              "geographic region"
+            ]
           },
           {
             "column_name": "reinsured",
@@ -998,7 +1486,11 @@
               "True if policy is ceded to reinsurance."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "ceded",
+              "treaty-covered"
+            ]
           },
           {
             "column_name": "state_code",
@@ -1006,7 +1498,11 @@
               "US two-letter state code."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "state",
+              "US state"
+            ]
           },
           {
             "column_name": "sum_insured_usd",
@@ -1014,7 +1510,13 @@
               "Sum insured / total insured value, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "TIV",
+              "SI",
+              "sum insured",
+              "insured value"
+            ]
           },
           {
             "column_name": "underwriter_score",
@@ -1022,7 +1524,12 @@
               "Underwriter quality score 0-100."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "UW score",
+              "underwriting score",
+              "risk score"
+            ]
           }
         ]
       },
@@ -1038,7 +1545,12 @@
               "Average cession percentage (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "cession",
+              "cession rate",
+              "RI %"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -1046,7 +1558,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "premium_ceded_usd",
@@ -1054,7 +1572,12 @@
               "Premium ceded to this reinsurer/treaty, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "ceded premium",
+              "cession",
+              "RI premium"
+            ]
           },
           {
             "column_name": "reinsurer",
@@ -1062,7 +1585,12 @@
               "Reinsurer (Munich Re, Swiss Re, Hannover Re, \u2026)."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "reinsurance company",
+              "carrier",
+              "RI"
+            ]
           },
           {
             "column_name": "total_limit_usd",
@@ -1070,7 +1598,12 @@
               "Aggregated treaty limit, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "limit",
+              "treaty limit",
+              "cover limit"
+            ]
           },
           {
             "column_name": "treaty_count",
@@ -1078,7 +1611,11 @@
               "Number of treaties in the slice."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "number of treaties",
+              "treaty count"
+            ]
           },
           {
             "column_name": "treaty_type",
@@ -1086,7 +1623,12 @@
               "QuotaShare / SurplusShare / ExcessOfLoss / Stop-Loss / CatastropheXL."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "reinsurance treaty type",
+              "treaty",
+              "RI type"
+            ]
           }
         ]
       },
@@ -1102,7 +1644,12 @@
               "Solvency metric name (e.g. 'SCR (Total)', 'Own Funds', 'Solvency Ratio')."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "component",
+              "category",
+              "line item"
+            ]
           },
           {
             "column_name": "value_usd",
@@ -1110,7 +1657,12 @@
               "Value of the metric, USD (Solvency Ratio is a fraction)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "amount",
+              "value",
+              "USD value"
+            ]
           }
         ]
       },
@@ -1126,7 +1678,12 @@
               "Premium ceded to reinsurers, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "ceded premium",
+              "cession premium",
+              "ceded"
+            ]
           },
           {
             "column_name": "claim_count",
@@ -1134,7 +1691,12 @@
               "Number of claims booked in the month."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "claims",
+              "number of claims",
+              "claim volume"
+            ]
           },
           {
             "column_name": "combined_ratio",
@@ -1142,7 +1704,12 @@
               "Loss ratio + expense ratio (0-1). <1 = underwriting profit."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "CR",
+              "combined",
+              "combined ratio %"
+            ]
           },
           {
             "column_name": "commission_usd",
@@ -1150,7 +1717,11 @@
               "Commission paid, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "commission",
+              "brokerage"
+            ]
           },
           {
             "column_name": "expense_ratio",
@@ -1158,7 +1729,11 @@
               "Commission / GWP (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "ER",
+              "expense-to-premium ratio"
+            ]
           },
           {
             "column_name": "gross_written_premium_usd",
@@ -1166,7 +1741,13 @@
               "Gross written premium for the month, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "GWP",
+              "premium",
+              "written premium",
+              "gross premium"
+            ]
           },
           {
             "column_name": "incurred_loss_usd",
@@ -1174,7 +1755,13 @@
               "Incurred losses, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "losses",
+              "incurred",
+              "incurred losses",
+              "loss"
+            ]
           },
           {
             "column_name": "line_of_business",
@@ -1182,7 +1769,13 @@
               "Personal / Commercial / Specialty."
             ],
             "enable_entity_matching": true,
-            "enable_format_assistance": false
+            "enable_format_assistance": false,
+            "synonyms": [
+              "LOB",
+              "line",
+              "business line",
+              "lines"
+            ]
           },
           {
             "column_name": "loss_ratio",
@@ -1190,7 +1783,11 @@
               "Incurred loss / GWP (0-1)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "LR",
+              "loss-to-premium ratio"
+            ]
           },
           {
             "column_name": "month",
@@ -1198,7 +1795,11 @@
               "Month bucket (first day of month)."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "month",
+              "reporting month"
+            ]
           },
           {
             "column_name": "net_written_premium_usd",
@@ -1206,7 +1807,12 @@
               "Net written premium (after reinsurance), USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "NWP",
+              "net premium",
+              "net written"
+            ]
           },
           {
             "column_name": "paid_loss_usd",
@@ -1214,7 +1820,11 @@
               "Paid losses, USD."
             ],
             "enable_entity_matching": false,
-            "enable_format_assistance": true
+            "enable_format_assistance": true,
+            "synonyms": [
+              "paid losses",
+              "paid"
+            ]
           }
         ]
       }
@@ -1223,7 +1833,7 @@
   "instructions": {
     "text_instructions": [
       {
-        "id": "15ca1087098ba9d453401fb18c94cea7",
+        "id": "64b998408d65deaf3179a0307b79df10",
         "content": [
           "## PURPOSE\n",
           "- Answer Property & Casualty insurance questions across Personal, Commercial and Specialty lines for Allianz.\n",
@@ -1255,31 +1865,7 @@
     ],
     "example_question_sqls": [
       {
-        "id": "037c8a8ea808f4dae96e0278d1c586db",
-        "question": [
-          "How much premium have we ceded to each reinsurer this year?"
-        ],
-        "sql": [
-          "SELECT reinsurer, treaty_type, ROUND(SUM(premium_ceded_usd) / 1e6, 1) AS ceded_musd, ROUND(AVG(avg_cession_pct) * 100, 1) AS avg_cession_pct, SUM(treaty_count) AS treaty_count FROM serverless_stable_xhky6g_catalog.allianz_gold.reinsurance_summary GROUP BY reinsurer, treaty_type ORDER BY ceded_musd DESC"
-        ],
-        "usage_guidance": [
-          "Use for any reinsurance ceded-premium / treaty-utilization question."
-        ]
-      },
-      {
-        "id": "12878fb8d06f6b6d611f8a454b8a8663",
-        "question": [
-          "What is our total insured value (TIV) by US state?"
-        ],
-        "sql": [
-          "SELECT state_code, ROUND(SUM(total_insured_value_usd) / 1e9, 2) AS tiv_busd, SUM(policy_count) AS policies FROM serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation GROUP BY state_code ORDER BY tiv_busd DESC"
-        ],
-        "usage_guidance": [
-          "Use for any exposure-accumulation question by geography."
-        ]
-      },
-      {
-        "id": "1ff8455ce26bba5a69072d11c5110b5f",
+        "id": "05f9ab9481accfedaf5f238b7aa5f940",
         "question": [
           "Show our solvency capital breakdown (SCR by component, own funds, ratio)."
         ],
@@ -1291,31 +1877,19 @@
         ]
       },
       {
-        "id": "42d0e6e9de031df0bda830107806444b",
+        "id": "0997fd0a6ae02202aa2923a7b2348607",
         "question": [
-          "Which segments have a combined ratio above 100%?"
+          "How much premium have we ceded to each reinsurer this year?"
         ],
         "sql": [
-          "SELECT line_of_business, product, state_code, channel, customer_type, ROUND(combined_ratio * 100, 1) AS combined_ratio_pct, ROUND(gross_premium_usd / 1e6, 1) AS gwp_musd FROM serverless_stable_xhky6g_catalog.allianz_gold.loss_ratio_by_segment WHERE combined_ratio > 1 AND gross_premium_usd > 50000 ORDER BY combined_ratio DESC LIMIT 20"
+          "SELECT reinsurer, treaty_type, ROUND(SUM(premium_ceded_usd) / 1e6, 1) AS ceded_musd, ROUND(AVG(avg_cession_pct) * 100, 1) AS avg_cession_pct, SUM(treaty_count) AS treaty_count FROM serverless_stable_xhky6g_catalog.allianz_gold.reinsurance_summary GROUP BY reinsurer, treaty_type ORDER BY ceded_musd DESC"
         ],
         "usage_guidance": [
-          "Use whenever the user asks for under-performing segments or rate-action candidates."
+          "Use for any reinsurance ceded-premium / treaty-utilization question."
         ]
       },
       {
-        "id": "4754c79e09c505f4c7e50a0781009e99",
-        "question": [
-          "Show combined ratio trend by line of business for the last 12 months."
-        ],
-        "sql": [
-          "SELECT date_trunc('MONTH', month) AS m, line_of_business, ROUND(AVG(combined_ratio) * 100, 1) AS combined_ratio_pct FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis WHERE month >= add_months(current_date(), -12) GROUP BY 1, 2 ORDER BY 1, 2"
-        ],
-        "usage_guidance": [
-          "Use for any combined-ratio or loss-ratio trend question; swap the time window as needed."
-        ]
-      },
-      {
-        "id": "50fc5aa3630a1833979eaa1d3de72153",
+        "id": "24a4cb8fc520c09de3e9e565e2f9043c",
         "question": [
           "What are the top 10 perils by total incurred loss?"
         ],
@@ -1327,7 +1901,7 @@
         ]
       },
       {
-        "id": "64e95857a92e86854ab29a7ab5d90f03",
+        "id": "2e3690e33e5fdeee62a7301e8ea38004",
         "question": [
           "What is the estimated PML for current catastrophe events?"
         ],
@@ -1339,19 +1913,7 @@
         ]
       },
       {
-        "id": "a75b999af3c74110efe6971c863703a6",
-        "question": [
-          "What is gross written premium by line of business this year?"
-        ],
-        "sql": [
-          "SELECT line_of_business, ROUND(SUM(gross_written_premium_usd) / 1e6, 1) AS gwp_musd FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis WHERE month >= date_trunc('year', current_date()) GROUP BY line_of_business ORDER BY gwp_musd DESC"
-        ],
-        "usage_guidance": [
-          "Use whenever the user asks for premium volume by LOB; swap month filter for the requested date range."
-        ]
-      },
-      {
-        "id": "b27ed1258fc465738cbb1dcda972cd83",
+        "id": "2ec19f1333c6d275e7b4289189abbacc",
         "question": [
           "Show book health (frequency and severity) by product for Personal Lines."
         ],
@@ -1363,7 +1925,7 @@
         ]
       },
       {
-        "id": "c9d6c4dd1250063985476e4d2d66f8a5",
+        "id": "60a90bae08f45602071cf760bfcf349b",
         "question": [
           "Top 20 claims by report lag, with state and peril."
         ],
@@ -1375,7 +1937,31 @@
         ]
       },
       {
-        "id": "e61248bfc4f89518b1450e1b791a2e1a",
+        "id": "807a7576c85b5e5521a85e1bc5298d72",
+        "question": [
+          "Show active NOAA alerts and the Allianz TIV they expose."
+        ],
+        "sql": [
+          "SELECT event_type, severity, urgency, state_code, state_name, ROUND(exposed_tiv_usd / 1e9, 2) AS exposed_tiv_busd, exposed_policy_count, effective_utc, expires_utc FROM serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation WHERE exposed_tiv_usd IS NOT NULL ORDER BY exposed_tiv_usd DESC LIMIT 20"
+        ],
+        "usage_guidance": [
+          "Use for any 'what events are hitting our book right now' question."
+        ]
+      },
+      {
+        "id": "85526c69e39eb3c12a981f4ad064c4f0",
+        "question": [
+          "Show combined ratio trend by line of business for the last 12 months."
+        ],
+        "sql": [
+          "SELECT date_trunc('MONTH', month) AS m, line_of_business, ROUND(AVG(combined_ratio) * 100, 1) AS combined_ratio_pct FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis WHERE month >= add_months(current_date(), -12) GROUP BY 1, 2 ORDER BY 1, 2"
+        ],
+        "usage_guidance": [
+          "Use for any combined-ratio or loss-ratio trend question; swap the time window as needed."
+        ]
+      },
+      {
+        "id": "d68723c356baa01513885ec97be11d20",
         "question": [
           "Asset portfolio breakdown by asset class and rating."
         ],
@@ -1387,38 +1973,46 @@
         ]
       },
       {
-        "id": "f8ea15d30df18ab001cc9704d9d4a227",
+        "id": "e1a5a06544eabcab1a04932531c0c2ff",
         "question": [
-          "Show active NOAA alerts and the Allianz TIV they expose."
+          "What is gross written premium by line of business this year?"
         ],
         "sql": [
-          "SELECT event_type, severity, urgency, state_code, state_name, ROUND(exposed_tiv_usd / 1e9, 2) AS exposed_tiv_busd, exposed_policy_count, effective_utc, expires_utc FROM serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation WHERE exposed_tiv_usd IS NOT NULL ORDER BY exposed_tiv_usd DESC LIMIT 20"
+          "SELECT line_of_business, ROUND(SUM(gross_written_premium_usd) / 1e6, 1) AS gwp_musd FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis WHERE month >= date_trunc('year', current_date()) GROUP BY line_of_business ORDER BY gwp_musd DESC"
         ],
         "usage_guidance": [
-          "Use for any 'what events are hitting our book right now' question."
+          "Use whenever the user asks for premium volume by LOB; swap month filter for the requested date range."
+        ]
+      },
+      {
+        "id": "ee19a0af2867473b77c4160c21e0bda0",
+        "question": [
+          "Which segments have a combined ratio above 100%?"
+        ],
+        "sql": [
+          "SELECT line_of_business, product, state_code, channel, customer_type, ROUND(combined_ratio * 100, 1) AS combined_ratio_pct, ROUND(gross_premium_usd / 1e6, 1) AS gwp_musd FROM serverless_stable_xhky6g_catalog.allianz_gold.loss_ratio_by_segment WHERE combined_ratio > 1 AND gross_premium_usd > 50000 ORDER BY combined_ratio DESC LIMIT 20"
+        ],
+        "usage_guidance": [
+          "Use whenever the user asks for under-performing segments or rate-action candidates."
+        ]
+      },
+      {
+        "id": "f88962d653ede1c705581cc37f6fb6f8",
+        "question": [
+          "What is our total insured value (TIV) by US state?"
+        ],
+        "sql": [
+          "SELECT state_code, ROUND(SUM(total_insured_value_usd) / 1e9, 2) AS tiv_busd, SUM(policy_count) AS policies FROM serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation GROUP BY state_code ORDER BY tiv_busd DESC"
+        ],
+        "usage_guidance": [
+          "Use for any exposure-accumulation question by geography."
         ]
       }
     ],
     "sql_snippets": {
       "measures": [
         {
-          "id": "29992638c9cfc89308907bf2e1e41540",
-          "alias": "total_gwp_musd",
-          "sql": [
-            "ROUND(SUM(`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`gross_written_premium_usd`) / 1e6, 1)"
-          ],
-          "display_name": "Total GWP ($M)"
-        },
-        {
-          "id": "562648c4c50f406c93ee0211ce34c715",
-          "alias": "avg_combined_ratio_pct",
-          "sql": [
-            "ROUND(AVG(`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`combined_ratio`) * 100, 1)"
-          ],
-          "display_name": "Combined Ratio %"
-        },
-        {
-          "id": "645c7246ab69074612f74585833036d8",
+          "id": "58c63c70aa9f18ce68c7c7ef54f86338",
           "alias": "total_incurred_musd",
           "sql": [
             "ROUND(SUM(`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`incurred_loss_usd`) / 1e6, 1)"
@@ -1426,7 +2020,7 @@
           "display_name": "Total Incurred Loss ($M)"
         },
         {
-          "id": "6f416c2d818eeb3020b2be44fdfd0fc1",
+          "id": "64b62a3f6aa60f34faae18cc6e0a103e",
           "alias": "total_tiv_busd",
           "sql": [
             "ROUND(SUM(`serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation`.`total_insured_value_usd`) / 1e9, 2)"
@@ -1434,7 +2028,23 @@
           "display_name": "Total Insured Value ($B)"
         },
         {
-          "id": "74785fa8408e940d78804ef11dbc83c6",
+          "id": "cff3cf4d7d85889a0e72c8eb77ecce24",
+          "alias": "avg_combined_ratio_pct",
+          "sql": [
+            "ROUND(AVG(`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`combined_ratio`) * 100, 1)"
+          ],
+          "display_name": "Combined Ratio %"
+        },
+        {
+          "id": "d63526cd98c4b7fc900847f52fcb3fdb",
+          "alias": "total_gwp_musd",
+          "sql": [
+            "ROUND(SUM(`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`gross_written_premium_usd`) / 1e6, 1)"
+          ],
+          "display_name": "Total GWP ($M)"
+        },
+        {
+          "id": "f67c04fb2408538544c23f7db794a625",
           "alias": "total_claim_count",
           "sql": [
             "SUM(`serverless_stable_xhky6g_catalog.allianz_gold.peril_loss_summary`.`claim_count`)"
@@ -1444,44 +2054,52 @@
       ],
       "filters": [
         {
-          "id": "2db8405a3ee5106b80d3083294602af9",
-          "display_name": "Catastrophe claims only",
+          "id": "4bd6d1a277356abf39d88160ac0a86ce",
+          "display_name": "Current calendar year",
           "sql": [
-            "`serverless_stable_xhky6g_catalog.allianz_gold.claim_360`.`is_cat` = true"
+            "`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`month` >= date_trunc('year', current_date())"
           ]
         },
         {
-          "id": "5f49ba908f5889bebb1d26941d139103",
-          "display_name": "Last 12 months",
-          "sql": [
-            "`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`month` >= add_months(current_date(), -12)"
-          ]
-        },
-        {
-          "id": "92c32137176bc73fb0980364dda30b01",
-          "display_name": "Active policies only",
-          "sql": [
-            "`serverless_stable_xhky6g_catalog.allianz_gold.policy_customer_360`.`policy_status` = 'Active'"
-          ]
-        },
-        {
-          "id": "adc61cfe6e8f70250b044f5099c741c5",
+          "id": "54c98a8d9d3697aa372cb688c44360f1",
           "display_name": "Personal Lines only",
           "sql": [
             "`serverless_stable_xhky6g_catalog.allianz_gold.policy_customer_360`.`line_of_business` = 'Personal'"
           ]
         },
         {
-          "id": "e2d16bca639cb47baf286b8483d63ba2",
-          "display_name": "Current calendar year",
+          "id": "6d6b596cf3d4df39fae67ba8e32578b8",
+          "display_name": "Active policies only",
           "sql": [
-            "`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`month` >= date_trunc('year', current_date())"
+            "`serverless_stable_xhky6g_catalog.allianz_gold.policy_customer_360`.`policy_status` = 'Active'"
+          ]
+        },
+        {
+          "id": "bc33ea89941a11c86b705dc8587b5d0a",
+          "display_name": "Catastrophe claims only",
+          "sql": [
+            "`serverless_stable_xhky6g_catalog.allianz_gold.claim_360`.`is_cat` = true"
+          ]
+        },
+        {
+          "id": "e042f5cfc114840552b5c5a84c35c916",
+          "display_name": "Last 12 months",
+          "sql": [
+            "`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`month` >= add_months(current_date(), -12)"
           ]
         }
       ],
       "expressions": [
         {
-          "id": "6e9f410da4f14c848178786038787021",
+          "id": "127f8f339e833fa466ebea9950ea070b",
+          "alias": "severity_pct",
+          "sql": [
+            "ROUND(`serverless_stable_xhky6g_catalog.allianz_gold.claim_360`.`severity_pct_of_sum_insured` * 100, 1)"
+          ],
+          "display_name": "Severity % of Sum Insured"
+        },
+        {
+          "id": "87449feefb979b9d828bc8e7e51a44d3",
           "alias": "policy_year",
           "sql": [
             "YEAR(`serverless_stable_xhky6g_catalog.allianz_gold.policy_customer_360`.`effective_date`)"
@@ -1489,41 +2107,33 @@
           "display_name": "Policy Year"
         },
         {
-          "id": "dc8776bce1d56e950e876b6ed9b53a4c",
+          "id": "a991f789e96668cba0196706c83634e6",
           "alias": "loss_ratio_pct",
           "sql": [
             "ROUND(`serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis`.`loss_ratio` * 100, 1)"
           ],
           "display_name": "Loss Ratio %"
-        },
-        {
-          "id": "e6ad9d973cfe8a5983f0f22d09e2a6c8",
-          "alias": "severity_pct",
-          "sql": [
-            "ROUND(`serverless_stable_xhky6g_catalog.allianz_gold.claim_360`.`severity_pct_of_sum_insured` * 100, 1)"
-          ],
-          "display_name": "Severity % of Sum Insured"
         }
       ]
     },
     "join_specs": [
       {
-        "id": "4fe49c11831e0b5b059367395bcedb81",
+        "id": "180e0e8922e1cc6b2b16095c6e85cdd2",
         "left": {
-          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.claim_360",
-          "alias": "claim_360"
+          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation",
+          "alias": "event_risk_correlation"
         },
         "right": {
-          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.policy_customer_360",
-          "alias": "policy_customer_360"
+          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation",
+          "alias": "exposure_accumulation"
         },
         "sql": [
-          "`claim_360`.`policy_id` = `policy_customer_360`.`policy_id`",
-          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+          "`event_risk_correlation`.`state_code` = `exposure_accumulation`.`state_code`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_MANY--"
         ]
       },
       {
-        "id": "7f4e245fe425881a0c615375d93d0f0c",
+        "id": "8024ba6c217d67b09b1e68607ba7d6e0",
         "left": {
           "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.cat_event_pml",
           "alias": "cat_event_pml"
@@ -1538,18 +2148,18 @@
         ]
       },
       {
-        "id": "e4d51218cf86f940ac20c5f9fa264de0",
+        "id": "ca3c6bf0947505af1eb6d298baeb3128",
         "left": {
-          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation",
-          "alias": "event_risk_correlation"
+          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.claim_360",
+          "alias": "claim_360"
         },
         "right": {
-          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation",
-          "alias": "exposure_accumulation"
+          "identifier": "serverless_stable_xhky6g_catalog.allianz_gold.policy_customer_360",
+          "alias": "policy_customer_360"
         },
         "sql": [
-          "`event_risk_correlation`.`state_code` = `exposure_accumulation`.`state_code`",
-          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_MANY--"
+          "`claim_360`.`policy_id` = `policy_customer_360`.`policy_id`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
         ]
       }
     ]
@@ -1557,105 +2167,7 @@
   "benchmarks": {
     "questions": [
       {
-        "id": "040c9379d1530149be5127ac739c8bf5",
-        "question": [
-          "What is the average severity of cyber claims?"
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT ROUND(AVG(incurred_amount_usd), 0) AS avg_severity_usd FROM serverless_stable_xhky6g_catalog.allianz_gold.claim_360 WHERE product = 'Cyber'"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "44d194f8729da575dfe10962499d86b4",
-        "question": [
-          "Show our solvency ratio."
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT value_usd AS solvency_ratio FROM serverless_stable_xhky6g_catalog.allianz_gold.solvency_capital WHERE metric = 'Solvency Ratio'"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "552bc534ccb42a468444a1ca88b176e6",
-        "question": [
-          "How many active NOAA alerts affect our book?"
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT COUNT(*) FROM serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation WHERE exposed_tiv_usd IS NOT NULL"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "6d5483cf891fac4ef39a2843ce9e5a12",
-        "question": [
-          "What is the average yield of AAA-rated assets?"
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT ROUND(AVG(avg_yield_pct) * 100, 2) AS avg_yield_pct FROM serverless_stable_xhky6g_catalog.allianz_gold.asset_portfolio_summary WHERE rating = 'AAA'"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "75cc4720f18a6286e48db59a44f4fdbb",
-        "question": [
-          "How many claims are tagged as catastrophe?"
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT COUNT(*) FROM serverless_stable_xhky6g_catalog.allianz_gold.claim_360 WHERE is_cat = true"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "7f8497cf1261678096ad894e208b2576",
-        "question": [
-          "What is the combined ratio for Personal Lines in the last 12 months?"
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT ROUND(AVG(combined_ratio) * 100, 1) AS combined_ratio_pct FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis WHERE line_of_business = 'Personal' AND month >= add_months(current_date(), -12)"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "8665f99db75de97b5d26135a7c1dcd19",
-        "question": [
-          "Total premium ceded to Munich Re."
-        ],
-        "answer": [
-          {
-            "format": "SQL",
-            "content": [
-              "SELECT ROUND(SUM(premium_ceded_usd) / 1e6, 1) AS ceded_musd FROM serverless_stable_xhky6g_catalog.allianz_gold.reinsurance_summary WHERE reinsurer = 'Munich Re'"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "a3f9c777e1b38477ef39c55e8a3fc94e",
+        "id": "2cd4ea67943610582ecb89d8ee20342c",
         "question": [
           "Top 5 perils by p95 severity."
         ],
@@ -1669,21 +2181,35 @@
         ]
       },
       {
-        "id": "d46cc3cad22054796dce3f8a9c72edea",
+        "id": "4295fd64e5cc8ed5ad279f2d72ae406f",
         "question": [
-          "Top 5 states by total insured value."
+          "How many active NOAA alerts affect our book?"
         ],
         "answer": [
           {
             "format": "SQL",
             "content": [
-              "SELECT state_code, ROUND(SUM(total_insured_value_usd) / 1e9, 2) AS tiv_busd FROM serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation GROUP BY state_code ORDER BY tiv_busd DESC LIMIT 5"
+              "SELECT COUNT(*) FROM serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation WHERE exposed_tiv_usd IS NOT NULL"
             ]
           }
         ]
       },
       {
-        "id": "df5b96446275f017a58e7f9c8d1313a6",
+        "id": "5fb42aadd2931b8c562b40a15166f40f",
+        "question": [
+          "Show our solvency ratio."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT value_usd AS solvency_ratio FROM serverless_stable_xhky6g_catalog.allianz_gold.solvency_capital WHERE metric = 'Solvency Ratio'"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "65d37854c53e0e43a35d44832093c316",
         "question": [
           "How many active policies do we have?"
         ],
@@ -1692,6 +2218,90 @@
             "format": "SQL",
             "content": [
               "SELECT SUM(active_policy_count) FROM serverless_stable_xhky6g_catalog.allianz_gold.book_health"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "8424bad892fdbab98871b02075972873",
+        "question": [
+          "How many claims are tagged as catastrophe?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(*) FROM serverless_stable_xhky6g_catalog.allianz_gold.claim_360 WHERE is_cat = true"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "bf207cd1eedb69886c59910a0e8152b7",
+        "question": [
+          "What is the combined ratio for Personal Lines in the last 12 months?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT ROUND(AVG(combined_ratio) * 100, 1) AS combined_ratio_pct FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis WHERE line_of_business = 'Personal' AND month >= add_months(current_date(), -12)"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d490de439ee3df988f2a9afc4781b224",
+        "question": [
+          "Total premium ceded to Munich Re."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT ROUND(SUM(premium_ceded_usd) / 1e6, 1) AS ceded_musd FROM serverless_stable_xhky6g_catalog.allianz_gold.reinsurance_summary WHERE reinsurer = 'Munich Re'"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dcd791faed0dc8662d2b3e76ba5e0ee7",
+        "question": [
+          "What is the average severity of cyber claims?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT ROUND(AVG(incurred_amount_usd), 0) AS avg_severity_usd FROM serverless_stable_xhky6g_catalog.allianz_gold.claim_360 WHERE product = 'Cyber'"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "df18d9e097209eb12ee5bd9f76d93cb0",
+        "question": [
+          "What is the average yield of AAA-rated assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT ROUND(AVG(avg_yield_pct) * 100, 2) AS avg_yield_pct FROM serverless_stable_xhky6g_catalog.allianz_gold.asset_portfolio_summary WHERE rating = 'AAA'"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "e2b38f28a72fd18a2b205ba478b8c1b1",
+        "question": [
+          "Top 5 states by total insured value."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT state_code, ROUND(SUM(total_insured_value_usd) / 1e9, 2) AS tiv_busd FROM serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation GROUP BY state_code ORDER BY tiv_busd DESC LIMIT 5"
             ]
           }
         ]

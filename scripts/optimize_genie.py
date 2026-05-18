@@ -47,6 +47,131 @@ def fq(table: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Column synonyms — alternative names a user might type instead of the
+# canonical column name. Keyed by column_name so the same synonym list
+# applies wherever the column appears across the 12 marts. Synonyms feed
+# Genie's NL → column matching and also count toward the workbench IQ check.
+# ---------------------------------------------------------------------------
+SYNONYMS: dict[str, list[str]] = {
+    # ── Premium / KPI columns ─────────────────────────────────────────
+    "gross_written_premium_usd": ["GWP", "premium", "written premium", "gross premium"],
+    "net_written_premium_usd":   ["NWP", "net premium", "net written"],
+    "ceded_premium_usd":         ["ceded premium", "cession premium", "ceded"],
+    "annual_premium_usd":        ["premium", "AP", "annual premium"],
+    "gross_premium_usd":         ["GWP", "gross premium", "premium"],
+    "inforce_premium_usd":       ["IFP", "in-force premium", "inforce premium", "earned premium"],
+    "commission_usd":            ["commission", "brokerage"],
+
+    # ── Loss / claim columns ──────────────────────────────────────────
+    "incurred_loss_usd":         ["losses", "incurred", "incurred losses", "loss"],
+    "incurred_amount_usd":       ["incurred", "incurred loss", "loss amount"],
+    "paid_loss_usd":             ["paid losses", "paid"],
+    "paid_amount_usd":           ["paid", "paid amount"],
+    "reserve_amount_usd":        ["reserves", "case reserves", "outstanding"],
+    "net_paid_usd":              ["net paid", "paid net of recoveries"],
+    "claim_count":               ["claims", "number of claims", "claim volume"],
+    "active_policy_count":       ["active policies", "in-force policies", "inforce count"],
+    "policy_count":              ["policies", "number of policies"],
+
+    # ── Ratios ────────────────────────────────────────────────────────
+    "loss_ratio":                ["LR", "loss-to-premium ratio"],
+    "expense_ratio":             ["ER", "expense-to-premium ratio"],
+    "combined_ratio":            ["CR", "combined", "combined ratio %"],
+    "claim_frequency_per_100":   ["frequency", "freq per 100", "frequency per 100 policies"],
+    "avg_severity_usd":          ["severity", "average severity"],
+    "p95_severity_usd":          ["p95 severity", "95th percentile severity", "p95"],
+    "max_severity_usd":          ["worst claim", "max severity"],
+    "cat_share_of_loss":         ["cat share", "CAT %", "catastrophe share"],
+
+    # ── Exposure / TIV ────────────────────────────────────────────────
+    "total_insured_value_usd":   ["TIV", "sum insured", "SI", "exposure", "insured value"],
+    "sum_insured_usd":           ["TIV", "SI", "sum insured", "insured value"],
+    "inforce_sum_insured_usd":   ["inforce TIV", "in-force TIV"],
+    "exposed_tiv_usd":           ["exposed TIV", "TIV at risk", "exposed exposure"],
+    "exposed_policy_count":      ["exposed policies", "affected policies"],
+    "state_tiv_usd":             ["state TIV", "state exposure"],
+    "deductible_usd":            ["deductible", "excess", "retention"],
+
+    # ── Dimensions ────────────────────────────────────────────────────
+    "line_of_business":          ["LOB", "line", "business line", "lines"],
+    "product":                   ["sub-line", "sub_line", "subline", "product line"],
+    "lob_code":                  ["LOB code"],
+    "policy_status":             ["status", "policy state"],
+    "claim_status":              ["status", "claim state"],
+    "channel":                   ["distribution channel", "sales channel"],
+    "agent_channel":             ["agent distribution", "agent channel"],
+    "customer_type":             ["client type", "customer category"],
+    "loyalty_tier":              ["tier", "customer tier", "membership level"],
+    "income_bracket":            ["income segment", "income band"],
+    "credit_score":              ["FICO", "credit"],
+    "state_code":                ["state", "US state"],
+    "state_name":                ["state", "state name"],
+    "region":                    ["US region", "geographic region"],
+    "cresta_zone":               ["CRESTA", "accumulation zone", "cat zone"],
+    "flood_zone":                ["FEMA zone", "flood designation"],
+    "windstorm_zone":            ["wind tier", "windstorm tier"],
+    "peril":                     ["cause of loss", "hazard", "coverage type"],
+    "fraud_flag":                ["fraud", "fraud suspected", "SIU referral"],
+    "is_cat":                    ["catastrophe", "cat claim", "CAT flag"],
+    "catastrophe_code":          ["cat code", "event code"],
+    "reinsured":                 ["ceded", "treaty-covered"],
+
+    # ── Dates ─────────────────────────────────────────────────────────
+    "effective_date":            ["start date", "inception date", "policy start"],
+    "expiration_date":           ["expiry date", "policy end", "renewal date"],
+    "loss_date":                 ["date of loss", "DOL", "occurrence date"],
+    "report_date":               ["reported date", "DOR", "notification date"],
+    "report_lag_days":           ["reporting lag", "claim lag", "DOR-DOL", "report delay"],
+    "month":                     ["month", "reporting month"],
+
+    # ── Underwriting / Scores ─────────────────────────────────────────
+    "underwriter_score":         ["UW score", "underwriting score", "risk score"],
+    "avg_underwriter_score":     ["UW score", "underwriting score"],
+    "severity_pct_of_sum_insured": ["severity %", "loss severity", "severity ratio"],
+
+    # ── Assets / Solvency ────────────────────────────────────────────
+    "asset_class":               ["instrument", "asset type", "asset category"],
+    "rating":                    ["credit rating", "S&P rating", "Moody's rating"],
+    "market_value_usd":          ["MV", "market value"],
+    "book_value_usd":             ["BV", "book value", "carrying value"],
+    "avg_yield_pct":             ["yield", "return", "coupon"],
+    "avg_duration_yrs":          ["duration", "modified duration"],
+    "avg_esg_score":             ["ESG", "ESG score", "sustainability score"],
+    "metric":                    ["component", "category", "line item"],
+    "value_usd":                 ["amount", "value", "USD value"],
+
+    # ── Reinsurance ───────────────────────────────────────────────────
+    "reinsurer":                 ["reinsurance company", "carrier", "RI"],
+    "treaty_type":               ["reinsurance treaty type", "treaty", "RI type"],
+    "total_limit_usd":           ["limit", "treaty limit", "cover limit"],
+    "premium_ceded_usd":         ["ceded premium", "cession", "RI premium"],
+    "avg_cession_pct":           ["cession", "cession rate", "RI %"],
+    "treaty_count":              ["number of treaties", "treaty count"],
+
+    # ── Events / Catastrophes ────────────────────────────────────────
+    "alert_id":                  ["alert", "warning ID"],
+    "event_id":                  ["event ID", "catastrophe ID"],
+    "title":                     ["event name", "headline"],
+    "event_type":                ["alert type", "warning type", "peril type"],
+    "severity":                  ["alert severity", "level", "intensity"],
+    "urgency":                   ["urgency level"],
+    "effective_utc":             ["start time", "effective time", "alert start"],
+    "expires_utc":               ["end time", "expiry", "alert end"],
+    "event_time_utc":            ["event time", "occurrence time"],
+    "pml_estimate_usd":          ["PML", "probable maximum loss", "max loss", "PML estimate"],
+    "severity_factor":           ["severity factor", "loss factor", "scenario factor"],
+
+    # ── Misc IDs ──────────────────────────────────────────────────────
+    "policy_id":                 ["policy number", "policy", "contract number"],
+    "claim_id":                  ["claim number", "claim", "loss number"],
+    "customer_id":               ["client id", "insured id", "customer number"],
+    "agent_id":                  ["agent", "broker id", "intermediary"],
+    "customer_name":             ["client name", "insured name"],
+    "agent_name":                ["broker name", "intermediary name"],
+}
+
+
+# ---------------------------------------------------------------------------
 # Column metadata for the 12 chosen tables.
 # Each column is (column_name, description, kind)
 # where kind ∈ {"entity"  → enable_entity_matching only,
@@ -630,6 +755,9 @@ def assemble_space() -> dict:
             else:
                 entry["enable_entity_matching"] = True
                 entry["enable_format_assistance"] = True
+            syns = SYNONYMS.get(col_name)
+            if syns:
+                entry["synonyms"] = list(syns)
             cc_list.append(entry)
         cc_list.sort(key=lambda x: x["column_name"])
         ds_tables.append({
