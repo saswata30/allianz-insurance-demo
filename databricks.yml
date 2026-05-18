@@ -1,0 +1,52 @@
+# Allianz Insurance Intelligence Demo — Databricks Asset Bundle.
+#
+# Bundles every resource for the demo: synthetic data job, external feeds job,
+# Lakeflow declarative pipeline (silver+gold), AI/BI dashboard, Genie space.
+#
+# Deploy:
+#   databricks bundle deploy -t dev --profile fe-vm-fevm-serverless-stable-xhky6g
+#   databricks bundle run allianz_full_refresh -t dev --profile fe-vm-fevm-serverless-stable-xhky6g
+bundle:
+  name: allianz_insurance_demo
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Target Unity Catalog
+    default: serverless_stable_xhky6g_catalog
+  bronze_schema:
+    description: Bronze raw schema
+    default: allianz_bronze
+  silver_schema:
+    description: Silver conformed schema (alias used in code; physical target = gold)
+    default: allianz_silver
+  gold_schema:
+    description: Gold marts schema — DLT writes here
+    default: allianz_gold
+  ext_schema:
+    description: External feeds bronze schema
+    default: allianz_ext
+  warehouse_id:
+    description: SQL warehouse for jobs / dashboard
+    default: cf18de10632b58c8
+  notifications_email:
+    description: Where to send job failure alerts
+    default: saswata.sengupta@databricks.com
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://fevm-serverless-stable-xhky6g.cloud.databricks.com
+    run_as:
+      user_name: saswata.sengupta@databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://fevm-serverless-stable-xhky6g.cloud.databricks.com
+    run_as:
+      user_name: saswata.sengupta@databricks.com

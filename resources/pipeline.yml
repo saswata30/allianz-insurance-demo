@@ -1,0 +1,20 @@
+resources:
+  pipelines:
+    allianz_dlt:
+      name: "Allianz Insurance — Silver/Gold DLT"
+      catalog: ${var.catalog}
+      schema: ${var.gold_schema}
+      serverless: true
+      photon: true
+      development: true
+      continuous: false
+      channel: PREVIEW
+      configuration:
+        allianz.catalog: ${var.catalog}
+        allianz.bronze_schema: ${var.bronze_schema}
+        allianz.ext_schema: ${var.ext_schema}
+        allianz.gold_schema: ${var.gold_schema}
+        spark.sql.legacy.timeParserPolicy: LEGACY
+      libraries:
+        - file:
+            path: ../pipelines/allianz_dlt.py

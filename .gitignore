@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.uv/
+*.egg-info/
+.pytest_cache/
+
+# Databricks
+.databricks/
+.bundle/
+
+# Local data
+output/
+*.parquet
+
+# Local config
+.env
+.envrc
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

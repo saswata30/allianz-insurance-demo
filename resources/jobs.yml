@@ -1,0 +1,78 @@
+resources:
+  jobs:
+    allianz_full_refresh:
+      name: "Allianz — Full Refresh (data gen → external feeds → DLT)"
+      email_notifications:
+        on_failure:
+          - ${var.notifications_email}
+      environments:
+        - environment_key: default
+          spec:
+            client: "4"
+            dependencies:
+              - polars
+              - numpy
+              - mimesis
+              - httpx
+      tasks:
+        - task_key: synthetic_data
+          spark_python_task:
+            python_file: ../src/generate_data.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --schema
+              - ${var.bronze_schema}
+          environment_key: default
+
+        - task_key: external_feeds
+          depends_on:
+            - task_key: synthetic_data
+          spark_python_task:
+            python_file: ../src/external_feeds.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --schema
+              - ${var.ext_schema}
+          environment_key: default
+
+        - task_key: dlt_run
+          depends_on:
+            - task_key: external_feeds
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.allianz_dlt.id}
+            full_refresh: true
+
+    allianz_external_feeds_hourly:
+      name: "Allianz — External Feeds (hourly)"
+      email_notifications:
+        on_failure:
+          - ${var.notifications_email}
+      schedule:
+        quartz_cron_expression: "0 0 * * * ?"
+        timezone_id: UTC
+        pause_status: PAUSED
+      environments:
+        - environment_key: default
+          spec:
+            client: "4"
+            dependencies:
+              - polars
+              - httpx
+      tasks:
+        - task_key: external_feeds
+          spark_python_task:
+            python_file: ../src/external_feeds.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --schema
+              - ${var.ext_schema}
+          environment_key: default
+        - task_key: dlt_refresh
+          depends_on:
+            - task_key: external_feeds
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.allianz_dlt.id}
+            full_refresh: false

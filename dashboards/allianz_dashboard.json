@@ -1,0 +1,1630 @@
+{
+  "datasets": [
+    {
+      "name": "uw_kpis",
+      "displayName": "Underwriting KPIs",
+      "queryLines": [
+        "SELECT month, line_of_business, gross_written_premium_usd, net_written_premium_usd, incurred_loss_usd, claim_count, loss_ratio, expense_ratio, combined_ratio FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis "
+      ]
+    },
+    {
+      "name": "kpi_totals",
+      "displayName": "KPI Totals",
+      "queryLines": [
+        "SELECT   SUM(gross_written_premium_usd) AS total_gwp,   SUM(net_written_premium_usd)   AS total_nwp,   SUM(incurred_loss_usd)         AS total_losses,   SUM(claim_count)               AS total_claims,   CASE WHEN SUM(gross_written_premium_usd) > 0        THEN SUM(incurred_loss_usd) / SUM(gross_written_premium_usd) END AS overall_loss_ratio FROM serverless_stable_xhky6g_catalog.allianz_gold.underwriting_kpis "
+      ]
+    },
+    {
+      "name": "claims_summary",
+      "displayName": "Claims Summary",
+      "queryLines": [
+        "SELECT line_of_business, product, peril, claim_count, total_incurred_usd, avg_severity_usd, max_severity_usd, cat_claim_count, fraud_flag_count FROM serverless_stable_xhky6g_catalog.allianz_gold.claims_summary "
+      ]
+    },
+    {
+      "name": "exposure",
+      "displayName": "Exposure Accumulation",
+      "queryLines": [
+        "SELECT state_code, cresta_zone, region, line_of_business, product, total_insured_value_usd, annual_premium_usd, policy_count FROM serverless_stable_xhky6g_catalog.allianz_gold.exposure_accumulation "
+      ]
+    },
+    {
+      "name": "solvency",
+      "displayName": "Solvency Capital",
+      "queryLines": [
+        "SELECT metric, value_usd FROM serverless_stable_xhky6g_catalog.allianz_gold.solvency_capital "
+      ]
+    },
+    {
+      "name": "solvency_kpi",
+      "displayName": "Solvency KPI",
+      "queryLines": [
+        "SELECT   MAX(CASE WHEN metric = 'Solvency Ratio' THEN value_usd END) AS solvency_ratio,   MAX(CASE WHEN metric = 'SCR (Total)'    THEN value_usd END) AS scr_total,   MAX(CASE WHEN metric = 'Own Funds'      THEN value_usd END) AS own_funds,   MAX(CASE WHEN metric = 'Market Value'   THEN value_usd END) AS market_value FROM serverless_stable_xhky6g_catalog.allianz_gold.solvency_capital "
+      ]
+    },
+    {
+      "name": "assets",
+      "displayName": "Asset Portfolio",
+      "queryLines": [
+        "SELECT asset_class, rating, market_value_usd, book_value_usd, avg_yield_pct, avg_duration_yrs, avg_esg_score, position_count FROM serverless_stable_xhky6g_catalog.allianz_gold.asset_portfolio_summary "
+      ]
+    },
+    {
+      "name": "event_risk",
+      "displayName": "NOAA Event Risk",
+      "queryLines": [
+        "SELECT alert_id, event_type, severity, urgency, effective_utc, expires_utc, state_code, state_name, exposed_tiv_usd, exposed_policy_count FROM serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation "
+      ]
+    },
+    {
+      "name": "cat_events",
+      "displayName": "Catastrophe Events",
+      "queryLines": [
+        "SELECT event_id, title, event_type, severity, event_time_utc, latitude, longitude, state_code, pml_estimate_usd FROM serverless_stable_xhky6g_catalog.allianz_gold.cat_event_pml "
+      ]
+    },
+    {
+      "name": "event_risk_totals",
+      "displayName": "Event Risk Totals",
+      "queryLines": [
+        "SELECT   COUNT(*) AS active_alerts,   COUNT(DISTINCT state_code) AS states_with_alerts,   SUM(exposed_tiv_usd) AS total_exposed_tiv,   SUM(exposed_policy_count) AS total_exposed_policies FROM serverless_stable_xhky6g_catalog.allianz_gold.event_risk_correlation "
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "exec",
+      "displayName": "Executive",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "hdr_2a4ba78ca0",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Allianz Insurance Intelligence \u2014 Executive Summary"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "sub_8f224501a2",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Personal \u00b7 Commercial \u00b7 Specialty \u00b7 gross written premium, loss & combined ratio"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "c_acd15ea33d",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpi_totals",
+                  "fields": [
+                    {
+                      "name": "total_gwp",
+                      "expression": "`total_gwp`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_gwp",
+                  "displayName": "Gross Written Premium (USD)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Gross Written Premium (USD)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_db3566c6a1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpi_totals",
+                  "fields": [
+                    {
+                      "name": "total_nwp",
+                      "expression": "`total_nwp`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_nwp",
+                  "displayName": "Net Written Premium (USD)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Net Written Premium (USD)"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_5cc2d3282e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpi_totals",
+                  "fields": [
+                    {
+                      "name": "total_claims",
+                      "expression": "`total_claims`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_claims",
+                  "displayName": "Total Claims"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Claims"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "h_4f2c18537e",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Premium & Combined Ratio by Line of Business"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_1e476e2de6",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "uw_kpis",
+                  "fields": [
+                    {
+                      "name": "line_of_business",
+                      "expression": "`line_of_business`"
+                    },
+                    {
+                      "name": "sum(gross_written_premium_usd)",
+                      "expression": "SUM(`gross_written_premium_usd`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "line_of_business",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "line_of_business"
+                },
+                "y": {
+                  "fieldName": "sum(gross_written_premium_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(gross_written_premium_usd)"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Gross Written Premium by LOB"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "w_cafed01be6",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "uw_kpis",
+                  "fields": [
+                    {
+                      "name": "month",
+                      "expression": "DATE_TRUNC(\"MONTH\", `month`)"
+                    },
+                    {
+                      "name": "avg(combined_ratio)",
+                      "expression": "AVG(`combined_ratio`)"
+                    },
+                    {
+                      "name": "line_of_business",
+                      "expression": "`line_of_business`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "month",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "month"
+                },
+                "y": {
+                  "fieldName": "avg(combined_ratio)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "avg(combined_ratio)"
+                },
+                "color": {
+                  "fieldName": "line_of_business",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "line_of_business"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Combined Ratio Trend by LOB"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "h_329118c266",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Claims Severity by Peril (Top 15)"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_4f60a6ec57",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claims_summary",
+                  "fields": [
+                    {
+                      "name": "line_of_business",
+                      "expression": "`line_of_business`"
+                    },
+                    {
+                      "name": "product",
+                      "expression": "`product`"
+                    },
+                    {
+                      "name": "peril",
+                      "expression": "`peril`"
+                    },
+                    {
+                      "name": "claim_count",
+                      "expression": "`claim_count`"
+                    },
+                    {
+                      "name": "total_incurred_usd",
+                      "expression": "`total_incurred_usd`"
+                    },
+                    {
+                      "name": "avg_severity_usd",
+                      "expression": "`avg_severity_usd`"
+                    },
+                    {
+                      "name": "cat_claim_count",
+                      "expression": "`cat_claim_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "line_of_business",
+                    "displayName": "LOB"
+                  },
+                  {
+                    "fieldName": "product",
+                    "displayName": "Product"
+                  },
+                  {
+                    "fieldName": "peril",
+                    "displayName": "Peril"
+                  },
+                  {
+                    "fieldName": "claim_count",
+                    "displayName": "Claims"
+                  },
+                  {
+                    "fieldName": "total_incurred_usd",
+                    "displayName": "Total Incurred (USD)"
+                  },
+                  {
+                    "fieldName": "avg_severity_usd",
+                    "displayName": "Avg Severity (USD)"
+                  },
+                  {
+                    "fieldName": "cat_claim_count",
+                    "displayName": "Cat Claims"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Claims by LOB / Product / Peril"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 6,
+            "height": 7
+          }
+        }
+      ]
+    },
+    {
+      "name": "exposure",
+      "displayName": "Exposure & Accumulation",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "hdr_af90a34ee7",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Exposure & Accumulation"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "sub_8ccf484cf9",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Total insured value (TIV) and policy count by state, CRESTA zone, LOB"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_5fe9bc75c8",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "exposure",
+                  "fields": [
+                    {
+                      "name": "state_code",
+                      "expression": "`state_code`"
+                    },
+                    {
+                      "name": "sum(total_insured_value_usd)",
+                      "expression": "SUM(`total_insured_value_usd`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "state_code",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "state_code"
+                },
+                "y": {
+                  "fieldName": "sum(total_insured_value_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(total_insured_value_usd)"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "TIV by State (USD)"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "w_28929489a4",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "exposure",
+                  "fields": [
+                    {
+                      "name": "cresta_zone",
+                      "expression": "`cresta_zone`"
+                    },
+                    {
+                      "name": "sum(total_insured_value_usd)",
+                      "expression": "SUM(`total_insured_value_usd`)"
+                    },
+                    {
+                      "name": "region",
+                      "expression": "`region`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "cresta_zone",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "cresta_zone"
+                },
+                "y": {
+                  "fieldName": "sum(total_insured_value_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(total_insured_value_usd)"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "region",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "region"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "TIV by CRESTA Zone (Color by Region)"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "w_fbe6c41148",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "exposure",
+                  "fields": [
+                    {
+                      "name": "product",
+                      "expression": "`product`"
+                    },
+                    {
+                      "name": "sum(annual_premium_usd)",
+                      "expression": "SUM(`annual_premium_usd`)"
+                    },
+                    {
+                      "name": "line_of_business",
+                      "expression": "`line_of_business`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "product"
+                },
+                "y": {
+                  "fieldName": "sum(annual_premium_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(annual_premium_usd)"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "line_of_business",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "line_of_business"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Annual Premium by Product (Color by LOB)"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ],
+                "layout": "group"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "solvency",
+      "displayName": "Solvency II",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "hdr_467c3c62e4",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Solvency II"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "sub_85f7c0a957",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Solvency Capital Requirement breakdown, own funds, asset portfolio"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "c_39106d3489",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "solvency_kpi",
+                  "fields": [
+                    {
+                      "name": "solvency_ratio",
+                      "expression": "`solvency_ratio`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "solvency_ratio",
+                  "displayName": "Solvency Ratio"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Solvency Ratio"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_6f991923e7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "solvency_kpi",
+                  "fields": [
+                    {
+                      "name": "scr_total",
+                      "expression": "`scr_total`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "scr_total",
+                  "displayName": "SCR (USD)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "SCR (USD)"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_51a69c7f5b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "solvency_kpi",
+                  "fields": [
+                    {
+                      "name": "own_funds",
+                      "expression": "`own_funds`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "own_funds",
+                  "displayName": "Own Funds (USD)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Own Funds (USD)"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "h_ce1eda000a",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## SCR Breakdown & Asset Allocation"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_c6da9d5300",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "solvency",
+                  "fields": [
+                    {
+                      "name": "metric",
+                      "expression": "`metric`"
+                    },
+                    {
+                      "name": "sum(value_usd)",
+                      "expression": "SUM(`value_usd`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "metric",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "metric"
+                },
+                "y": {
+                  "fieldName": "sum(value_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(value_usd)"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Solvency Capital Components"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "w_1f5c881352",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "assets",
+                  "fields": [
+                    {
+                      "name": "sum(market_value_usd)",
+                      "expression": "SUM(`market_value_usd`)"
+                    },
+                    {
+                      "name": "asset_class",
+                      "expression": "`asset_class`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(market_value_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(market_value_usd)"
+                },
+                "color": {
+                  "fieldName": "asset_class",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "asset_class"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Asset Portfolio by Class"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "h_9e1cfa1217",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Asset Quality by Rating"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_57cb31a0fa",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "assets",
+                  "fields": [
+                    {
+                      "name": "rating",
+                      "expression": "`rating`"
+                    },
+                    {
+                      "name": "sum(market_value_usd)",
+                      "expression": "SUM(`market_value_usd`)"
+                    },
+                    {
+                      "name": "asset_class",
+                      "expression": "`asset_class`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "rating",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "rating"
+                },
+                "y": {
+                  "fieldName": "sum(market_value_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(market_value_usd)"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "asset_class",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "asset_class"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Market Value by Credit Rating"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "realtime",
+      "displayName": "Real-Time Event Risk",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "hdr_94de29b4c9",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Real-Time Event Risk Correlation"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "sub_639dee6413",
+            "multilineTextboxSpec": {
+              "lines": [
+                "Active NOAA alerts and catastrophe events overlapped with Allianz exposure"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "c_8c4500c5ac",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "event_risk_totals",
+                  "fields": [
+                    {
+                      "name": "active_alerts",
+                      "expression": "`active_alerts`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "active_alerts",
+                  "displayName": "Active NOAA Alerts"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Active NOAA Alerts"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_c909ad1fe2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "event_risk_totals",
+                  "fields": [
+                    {
+                      "name": "states_with_alerts",
+                      "expression": "`states_with_alerts`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "states_with_alerts",
+                  "displayName": "States Affected"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "States Affected"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_d5724f9eb0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "event_risk_totals",
+                  "fields": [
+                    {
+                      "name": "total_exposed_tiv",
+                      "expression": "`total_exposed_tiv`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_exposed_tiv",
+                  "displayName": "Exposed TIV (USD)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Exposed TIV (USD)"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "h_b4c121e870",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Active NOAA Alerts \u00d7 Exposure"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_64999aa420",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "event_risk",
+                  "fields": [
+                    {
+                      "name": "event_type",
+                      "expression": "`event_type`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`alert_id`)"
+                    },
+                    {
+                      "name": "severity",
+                      "expression": "`severity`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "event_type",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "event_type"
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "count(*)"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "severity",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "severity"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "NOAA Alerts by Type & Severity"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "w_51cc4e2a54",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "event_risk",
+                  "fields": [
+                    {
+                      "name": "state_code",
+                      "expression": "`state_code`"
+                    },
+                    {
+                      "name": "sum(exposed_tiv_usd)",
+                      "expression": "SUM(`exposed_tiv_usd`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "state_code",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "state_code"
+                },
+                "y": {
+                  "fieldName": "sum(exposed_tiv_usd)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "sum(exposed_tiv_usd)"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Exposed TIV by State"
+              },
+              "mark": {
+                "colors": [
+                  "#003781",
+                  "#006192",
+                  "#96DCFA",
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "h_99bd1b335d",
+            "multilineTextboxSpec": {
+              "lines": [
+                "## Catastrophe PML Estimates"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "w_9f3a00d24f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cat_events",
+                  "fields": [
+                    {
+                      "name": "title",
+                      "expression": "`title`"
+                    },
+                    {
+                      "name": "event_type",
+                      "expression": "`event_type`"
+                    },
+                    {
+                      "name": "severity",
+                      "expression": "`severity`"
+                    },
+                    {
+                      "name": "state_code",
+                      "expression": "`state_code`"
+                    },
+                    {
+                      "name": "pml_estimate_usd",
+                      "expression": "`pml_estimate_usd`"
+                    },
+                    {
+                      "name": "event_time_utc",
+                      "expression": "`event_time_utc`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "title",
+                    "displayName": "Event"
+                  },
+                  {
+                    "fieldName": "event_type",
+                    "displayName": "Type"
+                  },
+                  {
+                    "fieldName": "severity",
+                    "displayName": "Severity"
+                  },
+                  {
+                    "fieldName": "state_code",
+                    "displayName": "State"
+                  },
+                  {
+                    "fieldName": "pml_estimate_usd",
+                    "displayName": "PML Estimate (USD)"
+                  },
+                  {
+                    "fieldName": "event_time_utc",
+                    "displayName": "Event Time"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Catastrophe Events with PML Estimate"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ]
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
