@@ -12,7 +12,6 @@ resources:
       configuration:
         allianz.catalog: ${var.catalog}
         allianz.bronze_schema: ${var.bronze_schema}
-        allianz.ext_schema: ${var.ext_schema}
         allianz.gold_schema: ${var.gold_schema}
         spark.sql.legacy.timeParserPolicy: LEGACY
       libraries:

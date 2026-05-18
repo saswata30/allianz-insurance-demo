@@ -1,10 +1,10 @@
 # Allianz Insurance Intelligence — Databricks Demo
 
-End-to-end Databricks demo for **Allianz** spanning Personal Lines, Commercial Lines,
-and Specialty Insurance. Generates synthetic data, ingests external real-time
-weather + catastrophe feeds, builds a medallion pipeline with Lakeflow Declarative
-Pipelines, exposes a Genie Space for natural-language Q&A, and an AI/BI dashboard.
-Packaged as a Databricks Asset Bundle.
+End-to-end Databricks demo for **Allianz** spanning Personal Lines, Commercial
+Lines, and Specialty Insurance. Generates synthetic data, scrapes real-time
+weather + catastrophe feeds into a UC volume, ingests them into bronze, runs a
+Lakeflow Declarative Pipeline through silver to gold, exposes a Genie Space for
+NL Q&A and an AI/BI dashboard. Packaged as a Databricks Asset Bundle.
 
 ## Live Resources
 
@@ -12,32 +12,50 @@ Packaged as a Databricks Asset Bundle.
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Workspace   | <https://fevm-serverless-stable-xhky6g.cloud.databricks.com>                                                                                                         |
 | Catalog     | `serverless_stable_xhky6g_catalog`                                                                                                                                   |
-| Schemas     | `allianz_bronze` · `allianz_silver` · `allianz_gold` · `allianz_ext`                                                                                                 |
-| DLT pipeline | `Allianz Insurance — Silver/Gold DLT`                                                                                                                                |
-| Full refresh job | `Allianz — Full Refresh (data gen → external feeds → DLT)`                                                                                                       |
-| Hourly feeds job | `Allianz — External Feeds (hourly)`                                                                                                                              |
+| Schemas     | `allianz_bronze` · `allianz_silver` · `allianz_gold`                                                                                                                 |
+| Landing volume | `/Volumes/serverless_stable_xhky6g_catalog/allianz_bronze/landing/external/<feed>/`                                                                              |
+| DLT pipeline | `Allianz Insurance — Silver/Gold DLT`                                                                                                                              |
+| Full refresh job | `Allianz — Full Refresh (data gen → external land → bronze ingest → DLT)`                                                                                      |
+| Hourly feeds job | `Allianz — External Feeds (hourly)`                                                                                                                            |
 | Dashboard   | [Allianz Insurance Intelligence](https://fevm-serverless-stable-xhky6g.cloud.databricks.com/dashboardsv3/01f152dad34010d48251741cd17e7e33)                            |
 | Genie       | [Allianz Insurance Intelligence — Genie](https://fevm-serverless-stable-xhky6g.cloud.databricks.com/genie/rooms/01f152db5ad41c1c91ec9f08ca683bc3)                     |
 
 ## Architecture
 
 ```
-Sources                         Bronze              Silver              Gold              Consumption
-──────────────────────────────────────────────────────────────────────────────────────────────────────
-Synthetic core systems ──┐                                                              ┌─ Genie Space
-(policies, claims,       │                                                              │  (NL Q&A)
- premiums, customers,    │                                                              │
- agents, treaties,       ├──► allianz_bronze ──► (DLT) ──► allianz_gold ──► allianz_gold ──►┤
- assets, geography)      │                                                              │
-                         │                                                              └─ AI/BI Dashboard
-Open-Meteo weather  ─────┤                                                                 (4 pages)
-NOAA active alerts  ─────┤
-USGS earthquakes    ─────┼──► allianz_ext  ──────┘
-GDACS catastrophes  ─────┤
-ReliefWeb news      ─────┘
+Sources                          Bronze landing volume         Bronze tables       Silver tables       Gold marts
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Synthetic core systems ──┐                                ┌──► policies_raw      ┌──► dim_policy     ┌──► underwriting_kpis
+(policies, claims,       │                                │    claims_raw        │    fact_claim     │    claims_summary
+ premiums, customers,    │                                │    premiums_raw      │    fact_premium   │    exposure_accumulation
+ agents, geo,            ├──── direct write ──────────────┤    customers_raw     │    dim_customer   │    solvency_capital
+ reinsurance, assets)    │                                │    geography_raw     │    dim_geography  │    asset_portfolio_summary
+                         │                                │    asset_portfolio_raw│   dim_asset      │    reinsurance_summary
+                         │                                │    ...               │    ...            │    event_risk_correlation
+                         │                                │                      │                   │    cat_event_pml
+Open-Meteo weather ──────┤   ┌────────────────────────┐   │    weather_obs_raw   │    weather_obs   │
+NOAA active alerts ──────┼──►│ /Volumes/.../landing/  ├──►│    noaa_alerts_raw   │    noaa_alerts   │    policy_customer_360  ◀── joined view
+USGS earthquakes ────────┤   │   external/<feed>/.parq│   │    catastrophe_*_raw │    catastrophe_*  │    claim_360            ◀── joined view
+GDACS catastrophes ──────┤   └────────────────────────┘   │    earthquakes_raw   │    earthquake_*   │    loss_ratio_by_segment
+ReliefWeb news ──────────┘    (external_feeds.py)          │    news_raw          │    news_events    │    book_health          ◀── P&C KPIs
+                              (ingest_external.py merges)  │                      │                   │    peril_loss_summary
+                                                           │                      │                   │
+                                                           │    pc_policies_raw   │    pc_policies   │
+Migrated allianz_pc tables ────────► merge_allianz_pc.py ─►│    pc_claims_raw     │    pc_combined_* │
+(10 P&C reference tables)                                  │    pc_invest_*_raw   │    pc_solvency_* │
+                                                           │    ...               │    pc_loss_dev   │
+                                                           └─────────────────────┘    ...           │
 ```
 
-## Three Lines of Business
+## Schemas
+
+| Schema           | Purpose                                                  | Tables |
+| ---------------- | -------------------------------------------------------- | ------ |
+| `allianz_bronze` | Raw landing — synthetic + external (post-volume-merge) + migrated P&C raw | 19 |
+| `allianz_silver` | Conformed dims/facts, external silver, P&C reference data | 24 |
+| `allianz_gold`   | Business marts (KPIs, joined 360 views, segment loss ratio, book health) | 13 |
+
+## Lines of Business
 
 | LOB         | Products                                                                |
 | ----------- | ----------------------------------------------------------------------- |
@@ -45,39 +63,40 @@ ReliefWeb news      ─────┘
 | Commercial  | Property · General Liability · Workers Comp · D&O · Professional Liability |
 | Specialty   | Marine · Aviation · Cyber · Environmental Liability · Energy            |
 
-## Gold Tables (Business Marts)
+## Reusable SQL — `sql/`
 
-- `underwriting_kpis` — GWP/NWP/loss ratio/expense ratio/combined ratio by LOB & month
-- `claims_summary` — claim frequency & severity by LOB/product/peril
-- `exposure_accumulation` — TIV by state/CRESTA zone/LOB/product
-- `solvency_capital` — Simplified Solvency II breakdown (SCR, MCR, own funds)
-- `asset_portfolio_summary` — investments by asset class and rating
-- `event_risk_correlation` — NOAA active alerts × per-state exposure
-- `cat_event_pml` — catastrophe events with PML estimate
+| File                              | Purpose                                                            |
+| --------------------------------- | ------------------------------------------------------------------ |
+| `01_underwriting_kpis.sql`        | GWP / NWP / loss / expense / combined ratio by LOB & month        |
+| `02_book_health.sql`              | Policy count, GWP, frequency per 100, severity, loss ratio        |
+| `03_loss_triangle.sql`            | Accident-year × dev-period loss triangle (IBNR, ultimate loss)    |
+| `04_solvency_ii.sql`              | SCR breakdown, own funds, solvency ratio, regulatory status        |
+| `05_cat_pml_exposure.sql`         | Live catastrophe events × per-state TIV → PML estimate            |
+| `06_segment_loss_ratio.sql`       | Worst-performing LOB × product × state × channel × customer_type   |
+| `07_claim_360.sql`                | Claim + policy + customer + geography in one row                   |
+| `08_reinsurance_recoveries.sql`   | Ceded premium by reinsurer (USD + EUR books)                       |
+| `09_combined_ratio_vs_benchmark.sql` | Sub-line combined ratio vs published industry benchmarks         |
+| `10_realtime_event_risk.sql`      | NOAA active alerts × exposed TIV                                   |
 
-## Repository Layout
+Verify all SQL queries against the warehouse:
 
+```bash
+uv run --no-project scripts/smoke_test_sql.py
 ```
-allianz-insurance-demo/
-├── databricks.yml                  # DAB root
-├── DEMO.md                         # Architecture & brand guidelines
-├── TASKS.md                        # Build task tracker
-├── README.md                       # This file
-├── src/
-│   ├── generate_data.py            # Synthetic data generator (Polars + Connect)
-│   └── external_feeds.py           # Weather, NOAA, GDACS, USGS, ReliefWeb scraper
-├── pipelines/
-│   └── allianz_dlt.py              # Lakeflow Declarative Pipeline (bronze→silver→gold)
-├── resources/
-│   ├── jobs.yml                    # DAB job definitions
-│   └── pipeline.yml                # DAB pipeline definition
-├── dashboards/
-│   └── allianz_dashboard.json      # Lakeview dashboard JSON
-├── genie/                          # Genie config (populated via API)
-└── scripts/
-    ├── build_dashboard.py          # Creates the Lakeview dashboard
-    └── build_genie.py              # Creates the Genie Space
-```
+
+## Genie — industry-standard P&C content
+
+The Genie space at the link above includes:
+
+- **30 attached tables** spanning core silver dims/facts, all 10 P&C reference
+  tables, 2 live event feeds, and all 13 gold marts.
+- **11 instructions** covering Lines of Business, Glossary, Industry Benchmarks
+  (Combined Ratio · Frequency/Severity · Solvency II · Reinsurance), Table
+  Guidance, Joining Tables, Reporting Conventions, Data Freshness, and a
+  How-do-I FAQ.
+- **29 curated example questions** across underwriting / profitability, claims,
+  exposure, solvency, reserving (loss triangles), reinsurance, assets,
+  real-time event risk, and customer / channel mix.
 
 ## Running Locally
 
@@ -86,15 +105,16 @@ allianz-insurance-demo/
 databricks auth login --host https://fevm-serverless-stable-xhky6g.cloud.databricks.com \
   --profile fe-vm-fevm-serverless-stable-xhky6g
 
-# 2. Generate synthetic data
-uv run --with polars --with numpy --with mimesis \
+# 2. Generate synthetic data → allianz_bronze
+uv run --no-project --with polars --with numpy --with mimesis \
   --with "databricks-connect>=16.4,<17.0" \
   src/generate_data.py
 
-# 3. Pull external feeds (weather, NOAA, GDACS, USGS, news)
-uv run --with polars --with httpx \
-  --with "databricks-connect>=16.4,<17.0" \
-  src/external_feeds.py
+# 3. Pull external feeds → UC volume
+uv run --no-project --with polars --with httpx src/external_feeds.py
+
+# 4. Merge volume files → allianz_bronze.*_raw
+uv run --no-project --with "databricks-connect>=16.4,<17.0" src/ingest_external.py
 ```
 
 ## Deploying via DAB
@@ -102,15 +122,11 @@ uv run --with polars --with httpx \
 ```bash
 databricks bundle validate --profile fe-vm-fevm-serverless-stable-xhky6g
 databricks bundle deploy   --profile fe-vm-fevm-serverless-stable-xhky6g
+databricks bundle run      allianz_full_refresh --profile fe-vm-fevm-serverless-stable-xhky6g
 
-# Trigger the full pipeline
-databricks bundle run allianz_full_refresh --profile fe-vm-fevm-serverless-stable-xhky6g
-
-# Build & deploy the dashboard
-uv run --with httpx scripts/build_dashboard.py
-
-# Build & deploy the Genie Space
-uv run scripts/build_genie.py
+# Build & deploy the dashboard and the Genie space
+uv run --no-project --with httpx scripts/build_dashboard.py
+uv run --no-project scripts/build_genie.py
 ```
 
 ## Brand Guidelines

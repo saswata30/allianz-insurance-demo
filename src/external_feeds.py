@@ -1,27 +1,28 @@
 """
-Pulls real-time external feeds for Allianz risk-correlation pipeline:
+Pulls real-time external feeds and lands them as parquet files in a Unity
+Catalog volume — the bronze landing zone. A separate step (``ingest_external.py``)
+then merges those files into the ``allianz_bronze`` Delta tables.
 
-  • Weather observations from Open-Meteo (current weather per CRESTA zone)
-  • Storm events from NOAA's SWDI/Storm-Events public archive (latest CSV)
-  • Catastrophe events from GDACS (Global Disaster Alert) RSS
-  • Earthquake events from USGS (last 30 days)
-  • Humanitarian / risk news from ReliefWeb RSS
+Feeds:
+  • Open-Meteo current weather (per CRESTA city)
+  • NOAA active weather alerts
+  • USGS significant earthquakes (last 30 days)
+  • GDACS catastrophe events (RSS)
+  • ReliefWeb humanitarian news (RSS)
 
-Writes results to UC bronze schema, where the DLT pipeline picks them up.
-
-Designed to run as a Databricks job task (no Spark required for the fetch
-step; we just use Connect to write the resulting DataFrames).
+Landing path:
+    /Volumes/<catalog>/allianz_bronze/landing/external/<feed>/<run_ts>.parquet
 
 Usage:
-    uv run --with polars --with httpx --with feedparser \
-        --with "databricks-connect>=16.4,<17.0" \
+    uv run --with polars --with httpx --with "databricks-connect>=16.4,<17.0" \
         src/external_feeds.py
 """
 from __future__ import annotations
 
 import argparse
-import json
 import os
+import re
+import tempfile
 import uuid
 from datetime import datetime, timezone
 
@@ -29,16 +30,17 @@ import httpx
 import polars as pl
 
 DEFAULT_CATALOG = "serverless_stable_xhky6g_catalog"
-DEFAULT_SCHEMA = "allianz_ext"
+DEFAULT_VOLUME_SCHEMA = "allianz_bronze"
+DEFAULT_VOLUME = "landing"
+DEFAULT_PROFILE = "fe-vm-fevm-serverless-stable-xhky6g"
 
-# Sample of CRESTA-like locations covering high-exposure US cities
 LOCATIONS = [
-    ("Miami, FL",     25.7617, -80.1918, "USA-FL-1"),
-    ("Houston, TX",   29.7604, -95.3698, "USA-TX-2"),
+    ("Miami, FL",     25.7617, -80.1918,  "USA-FL-1"),
+    ("Houston, TX",   29.7604, -95.3698,  "USA-TX-2"),
     ("New Orleans, LA", 29.9511, -90.0715, "USA-LA-1"),
-    ("Tampa, FL",     27.9506, -82.4572, "USA-FL-2"),
+    ("Tampa, FL",     27.9506, -82.4572,  "USA-FL-2"),
     ("Charleston, SC", 32.7765, -79.9311, "USA-SC-1"),
-    ("Norfolk, VA",   36.8508, -76.2859, "USA-VA-1"),
+    ("Norfolk, VA",   36.8508, -76.2859,  "USA-VA-1"),
     ("Los Angeles, CA", 34.0522, -118.2437, "USA-CA-1"),
     ("San Francisco, CA", 37.7749, -122.4194, "USA-CA-2"),
     ("Seattle, WA",   47.6062, -122.3321, "USA-WA-1"),
@@ -52,10 +54,9 @@ LOCATIONS = [
 
 
 # --------------------------------------------------------------------------
-# Fetchers
+# Fetchers (unchanged from previous version)
 # --------------------------------------------------------------------------
 def fetch_weather() -> pl.DataFrame:
-    """Open-Meteo: current weather conditions per CRESTA city."""
     rows = []
     fetched_at = datetime.now(timezone.utc).isoformat()
     with httpx.Client(timeout=15.0) as client:
@@ -83,8 +84,8 @@ def fetch_weather() -> pl.DataFrame:
                     "observation_id": str(uuid.uuid4()),
                     "city": city,
                     "cresta_zone": cresta,
-                    "latitude": lat,
-                    "longitude": lon,
+                    "latitude": float(lat),
+                    "longitude": float(lon),
                     "observed_time_utc": cur.get("time"),
                     "temperature_f": cur.get("temperature_2m"),
                     "wind_speed_mph": cur.get("wind_speed_10m"),
@@ -103,7 +104,6 @@ def fetch_weather() -> pl.DataFrame:
 
 
 def fetch_usgs_earthquakes() -> pl.DataFrame:
-    """USGS: significant earthquakes in the last 30 days (worldwide)."""
     url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
     fetched_at = datetime.now(timezone.utc).isoformat()
     rows = []
@@ -111,11 +111,9 @@ def fetch_usgs_earthquakes() -> pl.DataFrame:
         with httpx.Client(timeout=20.0) as client:
             r = client.get(url)
             if r.status_code == 200:
-                features = r.json().get("features", [])
-                for f in features:
+                for f in r.json().get("features", []):
                     p = f.get("properties", {})
-                    g = f.get("geometry", {})
-                    coords = g.get("coordinates", [None, None, None])
+                    coords = f.get("geometry", {}).get("coordinates", [None, None, None])
                     rows.append({
                         "event_id": f.get("id"),
                         "event_type": "Earthquake",
@@ -143,8 +141,6 @@ def fetch_usgs_earthquakes() -> pl.DataFrame:
 
 
 def fetch_gdacs_disasters() -> pl.DataFrame:
-    """GDACS: global disaster RSS (parsed minimally without feedparser dep)."""
-    import re
     url = "https://www.gdacs.org/xml/rss.xml"
     fetched_at = datetime.now(timezone.utc).isoformat()
     rows = []
@@ -153,9 +149,7 @@ def fetch_gdacs_disasters() -> pl.DataFrame:
             r = client.get(url)
             if r.status_code != 200:
                 return pl.DataFrame(schema=_gdacs_schema())
-            text = r.text
-            items = re.findall(r"<item>(.*?)</item>", text, re.DOTALL)
-            for it in items[:200]:
+            for it in re.findall(r"<item>(.*?)</item>", r.text, re.DOTALL)[:200]:
                 title = (re.search(r"<title>(.*?)</title>", it, re.DOTALL) or [None, ""])
                 desc  = (re.search(r"<description>(.*?)</description>", it, re.DOTALL) or [None, ""])
                 pub   = (re.search(r"<pubDate>(.*?)</pubDate>", it, re.DOTALL) or [None, ""])
@@ -205,8 +199,6 @@ def _classify_gdacs(title: str) -> str:
 
 
 def fetch_reliefweb_news() -> pl.DataFrame:
-    """ReliefWeb headlines (humanitarian risk events)."""
-    import re
     url = "https://reliefweb.int/updates/rss.xml"
     fetched_at = datetime.now(timezone.utc).isoformat()
     rows = []
@@ -216,8 +208,7 @@ def fetch_reliefweb_news() -> pl.DataFrame:
             r = client.get(url)
             if r.status_code != 200:
                 return pl.DataFrame(schema=_news_schema())
-            items = re.findall(r"<item>(.*?)</item>", r.text, re.DOTALL)
-            for it in items[:100]:
+            for it in re.findall(r"<item>(.*?)</item>", r.text, re.DOTALL)[:100]:
                 title = (re.search(r"<title>(.*?)</title>", it, re.DOTALL) or [None, ""])[1].strip()
                 desc = (re.search(r"<description>(.*?)</description>", it, re.DOTALL) or [None, ""])[1].strip()
                 pub = (re.search(r"<pubDate>(.*?)</pubDate>", it, re.DOTALL) or [None, ""])[1].strip()
@@ -251,23 +242,20 @@ def _classify_news(title: str) -> str:
     t = (title or "").lower()
     if any(k in t for k in ("flood", "hurricane", "cyclone", "tornado", "earthquake", "wildfire", "typhoon")):
         return "Catastrophe"
-    if any(k in t for k in ("cyber", "ransomware", "breach")):
-        return "Cyber"
-    if any(k in t for k in ("epidemic", "outbreak", "covid")):
-        return "Health"
-    if any(k in t for k in ("conflict", "war", "violence")):
-        return "Conflict"
+    if any(k in t for k in ("cyber", "ransomware", "breach")): return "Cyber"
+    if any(k in t for k in ("epidemic", "outbreak", "covid")): return "Health"
+    if any(k in t for k in ("conflict", "war", "violence")):   return "Conflict"
     return "General"
 
 
 def fetch_noaa_storm_summary() -> pl.DataFrame:
-    """NOAA active alerts (lightweight summary endpoint)."""
     url = "https://api.weather.gov/alerts/active?status=actual&message_type=alert"
     fetched_at = datetime.now(timezone.utc).isoformat()
     rows = []
     try:
         with httpx.Client(timeout=20.0,
-                          headers={"User-Agent": "Allianz-Demo/1.0", "Accept": "application/geo+json"}) as client:
+                          headers={"User-Agent": "Allianz-Demo/1.0",
+                                   "Accept": "application/geo+json"}) as client:
             r = client.get(url)
             if r.status_code != 200:
                 return pl.DataFrame(schema=_storm_schema())
@@ -304,32 +292,58 @@ def _storm_schema():
 
 
 # --------------------------------------------------------------------------
-# Write
+# Volume upload — write each feed to /Volumes/<catalog>/<schema>/<volume>/external/<feed>/<run>.parquet
 # --------------------------------------------------------------------------
-def write_uc(spark, df: pl.DataFrame, catalog: str, schema: str, table: str):
+def land_to_volume(spark, df: pl.DataFrame, catalog: str, schema: str,
+                   volume: str, feed: str, run_ts: str):
     if df.is_empty():
-        print(f"  ⚠ skipping empty {table}")
-        return
-    print(f"  → {catalog}.{schema}.{table}  ({df.height:,} rows)")
-    spark_df = spark.createDataFrame(df.to_pandas())
-    (spark_df.write.format("delta")
-     .mode("append")
-     .option("mergeSchema", "true")
-     .saveAsTable(f"{catalog}.{schema}.{table}"))
+        print(f"  ⚠ skipping empty {feed}")
+        return None
+
+    # Write to a temp parquet locally, then upload via Databricks fs put.
+    with tempfile.NamedTemporaryFile(suffix=".parquet", delete=False) as tf:
+        local_path = tf.name
+    df.write_parquet(local_path)
+
+    remote_dir = f"/Volumes/{catalog}/{schema}/{volume}/external/{feed}"
+    remote = f"{remote_dir}/{run_ts}.parquet"
+    profile = os.environ.get("DATABRICKS_CONFIG_PROFILE", DEFAULT_PROFILE)
+    import subprocess
+    # Ensure parent directory exists (fs cp does not auto-create on UC volumes).
+    subprocess.run(
+        ["databricks", "fs", "mkdirs", f"dbfs:{remote_dir}", "--profile", profile],
+        capture_output=True, text=True,
+    )
+    proc = subprocess.run(
+        ["databricks", "fs", "cp", local_path, f"dbfs:{remote}",
+         "--overwrite", "--profile", profile],
+        capture_output=True, text=True,
+    )
+    if proc.returncode != 0:
+        print(f"  ✗ upload failed for {feed}: {proc.stderr[:200]}")
+        return None
+    print(f"  → {remote}  ({df.height:,} rows)")
+    os.unlink(local_path)
+    return remote
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--catalog", default=os.environ.get("ALLIANZ_CATALOG", DEFAULT_CATALOG))
-    parser.add_argument("--schema", default=os.environ.get("ALLIANZ_EXT_SCHEMA", DEFAULT_SCHEMA))
-    parser.add_argument("--profile", default=os.environ.get("DATABRICKS_CONFIG_PROFILE",
-                                                            "fe-vm-fevm-serverless-stable-xhky6g"))
-    parser.add_argument("--local-only", action="store_true")
+    parser.add_argument("--volume-schema", default=DEFAULT_VOLUME_SCHEMA)
+    parser.add_argument("--volume", default=DEFAULT_VOLUME)
+    parser.add_argument("--profile", default=os.environ.get(
+        "DATABRICKS_CONFIG_PROFILE", DEFAULT_PROFILE))
+    parser.add_argument("--local-only", action="store_true",
+                        help="Write to ./output/ instead of UC volume.")
     args = parser.parse_args()
 
     print("=" * 70)
-    print("ALLIANZ EXTERNAL FEEDS — weather / catastrophe / news")
+    print("ALLIANZ EXTERNAL FEEDS  →  bronze landing volume")
     print("=" * 70)
+    print(f"Catalog       : {args.catalog}")
+    print(f"Volume path   : /Volumes/{args.catalog}/{args.volume_schema}/{args.volume}/external/")
+    print()
 
     print("Fetching Open-Meteo weather…");      weather = fetch_weather()
     print(f"  {weather.height} obs")
@@ -342,32 +356,34 @@ def main():
     print("Fetching ReliefWeb news…");          news = fetch_reliefweb_news()
     print(f"  {news.height} stories")
 
-    tables = {
-        "weather_obs_raw": weather,
-        "earthquakes_raw": eq,
-        "catastrophe_events_raw": gdacs,
-        "noaa_alerts_raw": noaa,
-        "news_raw": news,
+    feeds = {
+        "weather":     weather,
+        "earthquakes": eq,
+        "catastrophes": gdacs,
+        "noaa_alerts": noaa,
+        "news":        news,
     }
 
+    run_ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
     if args.local_only:
-        os.makedirs("output", exist_ok=True)
-        for n, df in tables.items():
+        os.makedirs("output/external", exist_ok=True)
+        for feed, df in feeds.items():
             if not df.is_empty():
-                df.write_parquet(f"output/{n}.parquet")
-                print(f"  → output/{n}.parquet  ({df.height:,} rows)")
+                p = f"output/external/{feed}_{run_ts}.parquet"
+                df.write_parquet(p)
+                print(f"  → {p}  ({df.height:,} rows)")
         return
 
-    from databricks.connect import DatabricksSession
     os.environ["DATABRICKS_CONFIG_PROFILE"] = args.profile
-    spark = (DatabricksSession.builder
-             .profile(args.profile)
-             .serverless()
-             .getOrCreate())
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {args.catalog}.{args.schema}")
-    for n, df in tables.items():
-        write_uc(spark, df, args.catalog, args.schema, n)
-    spark.stop()
+    # Spark session is not needed for writes — we use the CLI fs cp.
+    # Keep a no-op spark variable for parity with the previous version.
+    for feed, df in feeds.items():
+        land_to_volume(None, df, args.catalog, args.volume_schema,
+                       args.volume, feed, run_ts)
+
+    print()
+    print("✓ Files landed. Run `ingest_external.py` to merge into bronze tables.")
 
 
 if __name__ == "__main__":

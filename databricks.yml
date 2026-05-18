@@ -25,9 +25,6 @@ variables:
   gold_schema:
     description: Gold marts schema — DLT writes here
     default: allianz_gold
-  ext_schema:
-    description: External feeds bronze schema
-    default: allianz_ext
   warehouse_id:
     description: SQL warehouse for jobs / dashboard
     default: cf18de10632b58c8

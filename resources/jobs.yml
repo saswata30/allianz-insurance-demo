@@ -1,7 +1,7 @@
 resources:
   jobs:
     allianz_full_refresh:
-      name: "Allianz — Full Refresh (data gen → external feeds → DLT)"
+      name: "Allianz — Full Refresh (data gen → external land → bronze ingest → DLT)"
       email_notifications:
         on_failure:
           - ${var.notifications_email}
@@ -25,7 +25,7 @@ resources:
               - ${var.bronze_schema}
           environment_key: default
 
-        - task_key: external_feeds
+        - task_key: land_external
           depends_on:
             - task_key: synthetic_data
           spark_python_task:
@@ -33,13 +33,29 @@ resources:
             parameters:
               - --catalog
               - ${var.catalog}
+              - --volume-schema
+              - ${var.bronze_schema}
+              - --volume
+              - landing
+          environment_key: default
+
+        - task_key: ingest_external
+          depends_on:
+            - task_key: land_external
+          spark_python_task:
+            python_file: ../src/ingest_external.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
               - --schema
-              - ${var.ext_schema}
+              - ${var.bronze_schema}
+              - --volume
+              - landing
           environment_key: default
 
         - task_key: dlt_run
           depends_on:
-            - task_key: external_feeds
+            - task_key: ingest_external
           pipeline_task:
             pipeline_id: ${resources.pipelines.allianz_dlt.id}
             full_refresh: true
@@ -61,18 +77,33 @@ resources:
               - polars
               - httpx
       tasks:
-        - task_key: external_feeds
+        - task_key: land_external
           spark_python_task:
             python_file: ../src/external_feeds.py
             parameters:
               - --catalog
               - ${var.catalog}
+              - --volume-schema
+              - ${var.bronze_schema}
+              - --volume
+              - landing
+          environment_key: default
+        - task_key: ingest_external
+          depends_on:
+            - task_key: land_external
+          spark_python_task:
+            python_file: ../src/ingest_external.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
               - --schema
-              - ${var.ext_schema}
+              - ${var.bronze_schema}
+              - --volume
+              - landing
           environment_key: default
         - task_key: dlt_refresh
           depends_on:
-            - task_key: external_feeds
+            - task_key: ingest_external
           pipeline_task:
             pipeline_id: ${resources.pipelines.allianz_dlt.id}
             full_refresh: false
