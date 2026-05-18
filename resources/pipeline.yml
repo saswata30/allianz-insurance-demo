@@ -3,7 +3,7 @@ resources:
     allianz_dlt:
       name: "Allianz Insurance — Silver/Gold DLT"
       catalog: ${var.catalog}
-      schema: ${var.gold_schema}
+      schema: ${var.silver_schema}
       serverless: true
       photon: true
       development: true

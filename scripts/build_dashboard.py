@@ -13,7 +13,8 @@ import uuid
 from pathlib import Path
 
 CATALOG = "serverless_stable_xhky6g_catalog"
-SCHEMA = "allianz_gold"
+SCHEMA = "allianz_gold"   # business marts
+SILVER = "allianz_silver" # conformed dims/facts (for detail tables)
 WAREHOUSE = "cf18de10632b58c8"
 PROFILE = "fe-vm-fevm-serverless-stable-xhky6g"
 

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Allianz insurance intelligence demo on Databricks (PL/CL/Specialty + Genie + AI/BI)"
 authors = [{name = "saswata30"}]
 readme = "README.md"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "polars>=1.0",
     "numpy>=1.26",

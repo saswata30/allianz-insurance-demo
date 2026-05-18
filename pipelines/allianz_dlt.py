@@ -1,15 +1,16 @@
 """
-Allianz Insurance Intelligence — Lakeflow Declarative Pipeline (DLT).
+Allianz Insurance Intelligence — Lakeflow Declarative Pipeline.
 
-Bronze → Silver → Gold for three lines of business plus external event/weather
-correlation. Pipeline is configured serverless via the DAB.
+Bronze raw landing is populated by:
+  • ``src/generate_data.py``       →  ``allianz_bronze``
+  • ``src/external_feeds.py``      →  ``allianz_ext``
 
-Catalog / schemas referenced via spark.conf:
-    allianz.catalog        — target catalog
-    allianz.bronze_schema  — schema where generator landed raw tables
-    allianz.ext_schema     — schema where external feeds landed raw tables
-    allianz.silver_schema  — silver target schema (== pipeline target)
-    allianz.gold_schema    — gold target schema
+The DLT pipeline publishes:
+  • Conformed silver dims, facts, external events  →  ``allianz_silver`` (default)
+  • Business marts                                  →  ``allianz_gold`` (qualified names)
+
+Cross-table dependencies always use ``dlt.read("<table>")`` so the DAG is
+resolved correctly and ordering is enforced.
 """
 from pyspark.sql import functions as F
 import dlt
@@ -17,11 +18,12 @@ import dlt
 CATALOG = spark.conf.get("allianz.catalog")
 BRONZE = spark.conf.get("allianz.bronze_schema", "allianz_bronze")
 EXT = spark.conf.get("allianz.ext_schema", "allianz_ext")
+GOLD = spark.conf.get("allianz.gold_schema", "allianz_gold")
 
 
 # =========================================================================
-# BRONZE — thin pass-through views over the raw tables produced by
-# generate_data.py and external_feeds.py
+# BRONZE views — thin pass-through over the raw landing tables.
+# (Views live inside the pipeline namespace only, not published to UC.)
 # =========================================================================
 def _bronze_view(name: str, source_schema: str, source_table: str):
     @dlt.view(name=f"bronze_{name}")
@@ -30,28 +32,27 @@ def _bronze_view(name: str, source_schema: str, source_table: str):
     return _view
 
 
-_bronze_view("policies",   BRONZE, "policies_raw")
-_bronze_view("customers",  BRONZE, "customers_raw")
-_bronze_view("agents",     BRONZE, "agents_raw")
-_bronze_view("premiums",   BRONZE, "premiums_raw")
-_bronze_view("claims",     BRONZE, "claims_raw")
-_bronze_view("geography",  BRONZE, "geography_raw")
-_bronze_view("reinsurance", BRONZE, "reinsurance_treaties_raw")
-_bronze_view("assets",     BRONZE, "asset_portfolio_raw")
-_bronze_view("weather",    EXT,    "weather_obs_raw")
-_bronze_view("earthquakes", EXT,   "earthquakes_raw")
-_bronze_view("catastrophes", EXT,  "catastrophe_events_raw")
-_bronze_view("noaa_alerts", EXT,   "noaa_alerts_raw")
-_bronze_view("news",       EXT,    "news_raw")
+_bronze_view("policies",     BRONZE, "policies_raw")
+_bronze_view("customers",    BRONZE, "customers_raw")
+_bronze_view("agents",       BRONZE, "agents_raw")
+_bronze_view("premiums",     BRONZE, "premiums_raw")
+_bronze_view("claims",       BRONZE, "claims_raw")
+_bronze_view("geography",    BRONZE, "geography_raw")
+_bronze_view("reinsurance",  BRONZE, "reinsurance_treaties_raw")
+_bronze_view("assets",       BRONZE, "asset_portfolio_raw")
+_bronze_view("weather",      EXT,    "weather_obs_raw")
+_bronze_view("earthquakes",  EXT,    "earthquakes_raw")
+_bronze_view("catastrophes", EXT,    "catastrophe_events_raw")
+_bronze_view("noaa_alerts",  EXT,    "noaa_alerts_raw")
+_bronze_view("news",         EXT,    "news_raw")
 
 
 # =========================================================================
-# SILVER — conformed dimensions and facts with DQ expectations
+# SILVER — conformed dims, facts, external events.
+# Unqualified names default to the pipeline target schema (allianz_silver).
 # =========================================================================
-@dlt.table(
-    name="dim_geography",
-    comment="Conformed geography dimension (US states + CRESTA zones).",
-)
+@dlt.table(name="dim_geography",
+           comment="Conformed geography dimension (US states + CRESTA zones).")
 @dlt.expect_or_drop("valid_geo_id", "geo_id IS NOT NULL")
 @dlt.expect("valid_lat", "latitude BETWEEN -90 AND 90")
 def dim_geography():
@@ -90,7 +91,8 @@ def dim_agent():
             ))
 
 
-@dlt.table(name="dim_policy", comment="Active and inactive policies across all LOBs.")
+@dlt.table(name="dim_policy",
+           comment="Active and inactive policies across all LOBs.")
 @dlt.expect_or_drop("valid_policy", "policy_id IS NOT NULL")
 @dlt.expect("premium_positive", "annual_premium_usd >= 0")
 def dim_policy():
@@ -114,7 +116,8 @@ def fact_premium():
                         F.col("gross_premium_usd") - F.col("ceded_to_reinsurance_usd")))
 
 
-@dlt.table(name="fact_claim", comment="Claims fact with peril and catastrophe tagging.")
+@dlt.table(name="fact_claim",
+           comment="Claims fact with peril and catastrophe tagging.")
 @dlt.expect("amount_positive", "incurred_amount_usd >= 0")
 def fact_claim():
     return (dlt.read("bronze_claims")
@@ -127,7 +130,8 @@ def fact_claim():
             .withColumn("is_cat", F.col("catastrophe_code").isNotNull()))
 
 
-@dlt.table(name="fact_exposure", comment="Per-policy exposure snapshot used for accumulation.")
+@dlt.table(name="fact_exposure",
+           comment="Per-policy exposure snapshot used for accumulation.")
 def fact_exposure():
     return (dlt.read("bronze_policies")
             .select(
@@ -148,7 +152,8 @@ def dim_reinsurance_treaty():
             .withColumn("treaty_end", F.to_date("treaty_end")))
 
 
-@dlt.table(name="dim_asset", comment="Investment portfolio for solvency / asset analytics.")
+@dlt.table(name="dim_asset",
+           comment="Investment portfolio for solvency / asset analytics.")
 def dim_asset():
     return (dlt.read("bronze_assets")
             .withColumn("purchase_date", F.to_date("purchase_date"))
@@ -166,8 +171,6 @@ def weather_observations():
 
 @dlt.table(name="catastrophe_events")
 def catastrophe_events():
-    # GDACS publishes RFC822 timestamps. We try ISO first, then a Spark-3 safe
-    # RFC822 pattern, and finally just keep the string if neither parses.
     return (dlt.read("bronze_catastrophes")
             .withColumn(
                 "event_time_utc",
@@ -201,10 +204,11 @@ def news_events():
 
 
 # =========================================================================
-# GOLD — business marts
+# GOLD — business marts. Published to allianz_gold via qualified name=.
+# Cross-references to silver use dlt.read() so DAG order is enforced.
 # =========================================================================
 @dlt.table(
-    name="underwriting_kpis",
+    name=f"{GOLD}.underwriting_kpis",
     comment="Underwriting KPIs by line of business and month: GWP, NWP, loss ratio, combined ratio.",
 )
 def underwriting_kpis():
@@ -236,7 +240,7 @@ def underwriting_kpis():
 
 
 @dlt.table(
-    name="claims_summary",
+    name=f"{GOLD}.claims_summary",
     comment="Claim frequency and severity by LOB / product / peril.",
 )
 def claims_summary():
@@ -251,7 +255,7 @@ def claims_summary():
 
 
 @dlt.table(
-    name="exposure_accumulation",
+    name=f"{GOLD}.exposure_accumulation",
     comment="Total insured value (TIV) accumulation by state / CRESTA / LOB / product.",
 )
 def exposure_accumulation():
@@ -267,11 +271,10 @@ def exposure_accumulation():
 
 
 @dlt.table(
-    name="solvency_capital",
+    name=f"{GOLD}.solvency_capital",
     comment="Simplified Solvency II calculation: own funds / SCR / MCR.",
 )
 def solvency_capital():
-    # Build aggregates as DataFrames (DLT-friendly — no scalar collect at graph-build time)
     market_value = (dlt.read("dim_asset")
                     .agg(F.sum("market_value_usd").alias("market_value"))
                     .withColumn("_join", F.lit(1)))
@@ -314,7 +317,7 @@ def solvency_capital():
 
 
 @dlt.table(
-    name="asset_portfolio_summary",
+    name=f"{GOLD}.asset_portfolio_summary",
     comment="Investment portfolio breakdown by class & rating for asset risk view.",
 )
 def asset_portfolio_summary():
@@ -329,7 +332,7 @@ def asset_portfolio_summary():
 
 
 @dlt.table(
-    name="reinsurance_summary",
+    name=f"{GOLD}.reinsurance_summary",
     comment="Reinsurance treaty summary by LOB and reinsurer.",
 )
 def reinsurance_summary():
@@ -342,12 +345,11 @@ def reinsurance_summary():
 
 
 @dlt.table(
-    name="event_risk_correlation",
-    comment=("Correlation gold mart: joins active external events / NOAA alerts / weather "
-             "with policy exposure by state, to compute exposed TIV and policy count."),
+    name=f"{GOLD}.event_risk_correlation",
+    comment=("Correlation gold mart: joins active NOAA alerts with per-state exposure "
+             "to compute exposed TIV and policy count."),
 )
 def event_risk_correlation():
-    # 1) Map NOAA alerts to states by parsing area_desc for state abbreviations
     states = (dlt.read("dim_geography")
               .select("state_code", "state_name").distinct())
 
@@ -360,38 +362,34 @@ def event_risk_correlation():
                     .where(F.col("area_desc").contains(F.col("state_name"))
                            | F.col("area_desc").contains(F.col("state_code"))))
 
-    # 2) Build exposure by state from fact_exposure
     exposure_state = (dlt.read("fact_exposure").alias("e")
                       .join(dlt.read("dim_geography").alias("g"), "geo_id")
                       .groupBy(F.col("g.state_code").alias("state_code"))
                       .agg(F.sum("total_insured_value_usd").alias("state_tiv_usd"),
                            F.count("*").alias("state_policy_count")))
 
-    # 3) Join alerts to exposure
-    correlation = (alerts_state.alias("a")
-                   .join(exposure_state.alias("x"),
-                         F.col("a.state_code") == F.col("x.state_code"), "left")
-                   .select(
-                       F.col("a.alert_id"),
-                       F.col("a.event_type"),
-                       F.col("a.severity"),
-                       F.col("a.urgency"),
-                       F.col("a.effective_utc"),
-                       F.col("a.expires_utc"),
-                       F.col("a.state_code"),
-                       F.col("a.state_name"),
-                       F.col("x.state_tiv_usd").alias("exposed_tiv_usd"),
-                       F.col("x.state_policy_count").alias("exposed_policy_count"),
-                   ))
-    return correlation
+    return (alerts_state.alias("a")
+            .join(exposure_state.alias("x"),
+                  F.col("a.state_code") == F.col("x.state_code"), "left")
+            .select(
+                F.col("a.alert_id"),
+                F.col("a.event_type"),
+                F.col("a.severity"),
+                F.col("a.urgency"),
+                F.col("a.effective_utc"),
+                F.col("a.expires_utc"),
+                F.col("a.state_code"),
+                F.col("a.state_name"),
+                F.col("x.state_tiv_usd").alias("exposed_tiv_usd"),
+                F.col("x.state_policy_count").alias("exposed_policy_count"),
+            ))
 
 
 @dlt.table(
-    name="cat_event_pml",
+    name=f"{GOLD}.cat_event_pml",
     comment="Probable Maximum Loss estimate per catastrophe peril using exposure & severity factors.",
 )
 def cat_event_pml():
-    """Toy PML view: exposure * peril-severity factor for the worst recent events."""
     peril_factor = spark.createDataFrame(
         [("Earthquake", 0.18), ("TropicalCyclone", 0.22), ("Flood", 0.12),
          ("Wildfire", 0.08), ("Drought", 0.03), ("Volcanic", 0.10), ("Other", 0.02)],
@@ -402,7 +400,6 @@ def cat_event_pml():
                       .groupBy(F.col("g.state_code").alias("state_code"))
                       .agg(F.sum("total_insured_value_usd").alias("state_tiv_usd")))
 
-    # Combine catastrophe events with peril factor and country-level exposure
     return (dlt.read("catastrophe_events")
             .join(peril_factor, "event_type", "left")
             .crossJoin(exposure_state)

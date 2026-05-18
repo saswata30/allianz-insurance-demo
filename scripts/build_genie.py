@@ -20,48 +20,62 @@ import subprocess
 import sys
 
 CATALOG = "serverless_stable_xhky6g_catalog"
-SCHEMA = "allianz_gold"
+SILVER = "allianz_silver"
+GOLD = "allianz_gold"
 WAREHOUSE = "cf18de10632b58c8"
 PROFILE = "fe-vm-fevm-serverless-stable-xhky6g"
 TITLE = "Allianz Insurance Intelligence — Genie"
 
+# (schema, table, description) — silver gives Genie row-level access for
+# detailed questions; gold gives pre-aggregated KPIs for fast answers.
 TABLES = [
-    ("underwriting_kpis",
-     "Monthly underwriting KPIs by LOB: GWP, NWP, loss ratio, expense ratio, combined ratio."),
-    ("claims_summary",
-     "Aggregated claims by LOB/product/peril — count, total incurred, avg severity, cat & fraud counts."),
-    ("exposure_accumulation",
-     "TIV and policy count by state, CRESTA zone, region, LOB and product."),
-    ("solvency_capital",
-     "Simplified Solvency II view: SCR breakdown, MCR, own funds, solvency ratio, market value."),
-    ("asset_portfolio_summary",
-     "Investment portfolio by asset class and rating: market value, yield, duration, ESG."),
-    ("event_risk_correlation",
-     "Live NOAA alerts joined to per-state Allianz exposure (TIV and policy count)."),
-    ("cat_event_pml",
-     "Catastrophe events (GDACS) with peril severity factor and PML estimate by state."),
-    ("dim_policy",
+    # Silver — conformed dims & facts
+    (SILVER, "dim_policy",
      "Policies across all LOBs with product, premium, sum insured, status."),
-    ("dim_customer",
+    (SILVER, "dim_customer",
      "Customers — individuals and businesses with demographics and loyalty tier."),
-    ("dim_geography",
+    (SILVER, "dim_geography",
      "Geography reference: state, region, ZIP, CRESTA zone, windstorm/flood zone."),
-    ("fact_premium",
-     "Monthly premium installments — gross premium, commission, tax, ceded, net premium."),
-    ("fact_claim",
-     "Claim fact with peril, loss/report dates, incurred, paid, salvage, fraud flag, cat code."),
-    ("fact_exposure",
-     "Per-policy exposure snapshot used for accumulation analysis."),
-    ("dim_reinsurance_treaty",
+    (SILVER, "dim_agent",
+     "Agents and brokers with channel, license state, specialty LOB."),
+    (SILVER, "dim_asset",
+     "Investment portfolio positions (asset class, rating, market value, yield, duration)."),
+    (SILVER, "dim_reinsurance_treaty",
      "Reinsurance treaties: type, reinsurer, limit, retention, cession %."),
-    ("reinsurance_summary",
-     "Reinsurance treaty summary by LOB and reinsurer (limit, ceded premium, avg cession)."),
-    ("noaa_alerts",
+    (SILVER, "fact_premium",
+     "Monthly premium installments — gross premium, commission, tax, ceded, net premium."),
+    (SILVER, "fact_claim",
+     "Claim fact with peril, loss/report dates, incurred, paid, salvage, fraud flag, cat code."),
+    (SILVER, "fact_exposure",
+     "Per-policy exposure snapshot used for accumulation analysis."),
+    (SILVER, "noaa_alerts",
      "Active NOAA weather alerts (type, severity, urgency, area)."),
-    ("catastrophe_events",
+    (SILVER, "catastrophe_events",
      "GDACS catastrophe events (earthquake/cyclone/flood/wildfire) with lat/lon."),
-    ("weather_observations",
+    (SILVER, "earthquake_events",
+     "USGS significant earthquakes (last 30 days) with magnitude, lat/lon."),
+    (SILVER, "weather_observations",
      "Open-Meteo current weather per CRESTA city (temp, wind, precipitation, pressure)."),
+    (SILVER, "news_events",
+     "ReliefWeb humanitarian / catastrophe news headlines."),
+
+    # Gold — business marts
+    (GOLD, "underwriting_kpis",
+     "Monthly underwriting KPIs by LOB: GWP, NWP, loss ratio, expense ratio, combined ratio."),
+    (GOLD, "claims_summary",
+     "Aggregated claims by LOB/product/peril — count, total incurred, avg severity, cat & fraud counts."),
+    (GOLD, "exposure_accumulation",
+     "TIV and policy count by state, CRESTA zone, region, LOB and product."),
+    (GOLD, "solvency_capital",
+     "Simplified Solvency II view: SCR breakdown, MCR, own funds, solvency ratio, market value."),
+    (GOLD, "asset_portfolio_summary",
+     "Investment portfolio by asset class and rating: market value, yield, duration, ESG."),
+    (GOLD, "reinsurance_summary",
+     "Reinsurance treaty summary by LOB and reinsurer (limit, ceded premium, avg cession)."),
+    (GOLD, "event_risk_correlation",
+     "Live NOAA alerts joined to per-state Allianz exposure (TIV and policy count)."),
+    (GOLD, "cat_event_pml",
+     "Catastrophe events (GDACS) with peril severity factor and PML estimate by state."),
 ]
 
 INSTRUCTIONS = [
@@ -135,13 +149,13 @@ def find_or_create_space() -> str:
 
 
 def attach_tables(space_id: str):
-    tables_sorted = sorted(TABLES, key=lambda x: f"{CATALOG}.{SCHEMA}.{x[0]}")
+    tables_sorted = sorted(TABLES, key=lambda x: f"{CATALOG}.{x[0]}.{x[1]}")
     export = {
         "version": 2,
         "data_sources": {
             "tables": [
-                {"identifier": f"{CATALOG}.{SCHEMA}.{t}", "description": [d]}
-                for t, d in tables_sorted
+                {"identifier": f"{CATALOG}.{schema}.{table}", "description": [desc]}
+                for schema, table, desc in tables_sorted
             ],
         },
     }
