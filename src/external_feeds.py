@@ -305,22 +305,20 @@ def land_to_volume(spark, df: pl.DataFrame, catalog: str, schema: str,
         local_path = tf.name
     df.write_parquet(local_path)
 
-    remote_dir = f"/Volumes/{catalog}/{schema}/{volume}/external/{feed}"
-    remote = f"{remote_dir}/{run_ts}.parquet"
+    remote = (f"/Volumes/{catalog}/{schema}/{volume}/external/{feed}/{run_ts}.parquet")
     profile = os.environ.get("DATABRICKS_CONFIG_PROFILE", DEFAULT_PROFILE)
-    import subprocess
-    # Ensure parent directory exists (fs cp does not auto-create on UC volumes).
-    subprocess.run(
-        ["databricks", "fs", "mkdirs", f"dbfs:{remote_dir}", "--profile", profile],
-        capture_output=True, text=True,
-    )
-    proc = subprocess.run(
-        ["databricks", "fs", "cp", local_path, f"dbfs:{remote}",
-         "--overwrite", "--profile", profile],
-        capture_output=True, text=True,
-    )
-    if proc.returncode != 0:
-        print(f"  ✗ upload failed for {feed}: {proc.stderr[:200]}")
+    # Use the SDK Files API so this works both locally (with a profile) and
+    # inside a serverless Databricks job (using runtime credentials).
+    try:
+        from databricks.sdk import WorkspaceClient
+        try:
+            w = WorkspaceClient()
+        except Exception:
+            w = WorkspaceClient(profile=profile)
+        with open(local_path, "rb") as fh:
+            w.files.upload(file_path=remote, contents=fh, overwrite=True)
+    except Exception as e:
+        print(f"  ✗ upload failed for {feed}: {e}")
         return None
     print(f"  → {remote}  ({df.height:,} rows)")
     os.unlink(local_path)

@@ -58,6 +58,11 @@ def list_files(spark, volume_path: str) -> list[str]:
 
 def merge_feed(spark, catalog: str, schema: str, volume: str,
                folder: str, table: str, key: str) -> int:
+    """
+    Anti-join MERGE: read incoming parquet, drop rows whose PK already exists
+    in the target, then APPEND. Avoids SQL MERGE + temp-view patterns that are
+    unreliable in Connect serverless and works equally well on managed Delta.
+    """
     volume_path = f"/Volumes/{catalog}/{schema}/{volume}/external/{folder}"
     files = list_files(spark, volume_path)
     if not files:
@@ -65,30 +70,28 @@ def merge_feed(spark, catalog: str, schema: str, volume: str,
         return 0
 
     fq = f"{catalog}.{schema}.{table}"
-    incoming = spark.read.parquet(volume_path)
+    # Dedup incoming by PK so multiple parquet files in the folder can't insert
+    # the same event twice in a single run.
+    incoming = spark.read.parquet(volume_path).dropDuplicates([key])
     incoming_count = incoming.count()
     if incoming_count == 0:
         print(f"  ⚠ {fq}: 0 rows in landing files")
         return 0
 
-    # Create the target table if missing using the incoming schema, then MERGE.
     if not spark.catalog.tableExists(fq):
         (incoming.limit(0)
          .write.format("delta").saveAsTable(fq))
         print(f"  + created table {fq}")
 
-    incoming.createOrReplaceTempView("_src")
-    spark.sql(f"""
-        MERGE INTO {fq} t
-        USING (SELECT * FROM _src) s
-        ON t.{key} = s.{key}
-        WHEN MATCHED THEN UPDATE SET *
-        WHEN NOT MATCHED THEN INSERT *
-    """)
-
+    existing_keys = spark.table(fq).select(key).distinct()
+    new_rows = incoming.join(existing_keys, on=key, how="left_anti")
+    new_count = new_rows.count()
+    if new_count > 0:
+        new_rows.write.format("delta").mode("append").saveAsTable(fq)
     total = spark.table(fq).count()
-    print(f"  → {fq}  merged {incoming_count:,} incoming, total now {total:,}")
-    return incoming_count
+    print(f"  → {fq}  scanned {incoming_count:,}, appended {new_count:,}, "
+          f"total now {total:,}")
+    return new_count
 
 
 def main():

@@ -1,7 +1,7 @@
 resources:
   jobs:
     allianz_full_refresh:
-      name: "Allianz — Full Refresh (data gen → external land → bronze ingest → DLT)"
+      name: "Allianz — Full Refresh (data gen → external land → bronze ingest → DLT → event report)"
       email_notifications:
         on_failure:
           - ${var.notifications_email}
@@ -14,6 +14,14 @@ resources:
               - numpy
               - mimesis
               - httpx
+              - databricks-sdk
+        - environment_key: report
+          spec:
+            client: "4"
+            dependencies:
+              - reportlab
+              - python-docx
+              - databricks-sdk
       tasks:
         - task_key: synthetic_data
           spark_python_task:
@@ -60,6 +68,22 @@ resources:
             pipeline_id: ${resources.pipelines.allianz_dlt.id}
             full_refresh: true
 
+        - task_key: event_report
+          depends_on:
+            - task_key: dlt_run
+          spark_python_task:
+            python_file: ../src/event_report.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --volume-schema
+              - ${var.bronze_schema}
+              - --volume
+              - landing
+              - --format
+              - both
+          environment_key: report
+
     allianz_external_feeds_hourly:
       name: "Allianz — External Feeds (hourly)"
       email_notifications:
@@ -76,6 +100,14 @@ resources:
             dependencies:
               - polars
               - httpx
+              - databricks-sdk
+        - environment_key: report
+          spec:
+            client: "4"
+            dependencies:
+              - reportlab
+              - python-docx
+              - databricks-sdk
       tasks:
         - task_key: land_external
           spark_python_task:
@@ -107,3 +139,18 @@ resources:
           pipeline_task:
             pipeline_id: ${resources.pipelines.allianz_dlt.id}
             full_refresh: false
+        - task_key: event_report
+          depends_on:
+            - task_key: dlt_refresh
+          spark_python_task:
+            python_file: ../src/event_report.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --volume-schema
+              - ${var.bronze_schema}
+              - --volume
+              - landing
+              - --format
+              - both
+          environment_key: report
