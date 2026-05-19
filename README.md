@@ -58,6 +58,18 @@ Migrated allianz_pc tables ────────► merge_allianz_pc.py ─�
 
 </details>
 
+## Dashboard Preview
+
+Sample views from the [Allianz Insurance Intelligence dashboard](https://fevm-serverless-stable-xhky6g.cloud.databricks.com/dashboardsv3/01f152dad34010d48251741cd17e7e33) and Genie space — climate-risk and ESG portfolio analytics on the gold marts.
+
+<p align="center">
+  <img src="docs/screenshots/dashboard-esg-portfolio.png" alt="ESG Portfolio Distribution by Tier" width="100%">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/dashboard-esg-asset-class.png" alt="ESG Scores by Asset Class" width="100%">
+</p>
+
 ## Schemas
 
 | Schema           | Purpose                                                  | Tables |
