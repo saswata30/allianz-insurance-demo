@@ -22,6 +22,15 @@ NL Q&A and an AI/BI dashboard. Packaged as a Databricks Asset Bundle.
 
 ## Architecture
 
+<p align="center">
+  <img src="docs/diagrams/architecture.svg" alt="Allianz Insurance Intelligence — Lakehouse data flow" width="100%">
+</p>
+
+Source: [`docs/diagrams/architecture.mmd`](docs/diagrams/architecture.mmd) (Mermaid).
+
+<details>
+<summary>ASCII view</summary>
+
 ```
 Sources                          Bronze landing volume         Bronze tables       Silver tables       Gold marts
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -46,6 +55,8 @@ Migrated allianz_pc tables ────────► merge_allianz_pc.py ─�
                                                            │    ...               │    pc_loss_dev   │
                                                            └─────────────────────┘    ...           │
 ```
+
+</details>
 
 ## Schemas
 

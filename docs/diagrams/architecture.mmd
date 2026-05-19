@@ -1,0 +1,57 @@
+%% Allianz Insurance Intelligence — Lakehouse data flow
+%% Source for docs/diagrams/architecture.svg
+flowchart LR
+    subgraph SOURCES["📥 Sources"]
+        SYNTH["🏗️ Synthetic Core Systems<br/>policies · claims · premiums<br/>customers · agents · geo<br/>reinsurance · assets"]
+        METEO["🌤️ Open-Meteo Weather"]
+        NOAA["🔔 NOAA Active Alerts"]
+        USGS["🌍 USGS Earthquakes"]
+        GDACS["🌀 GDACS Catastrophes"]
+        RELIEF["📰 ReliefWeb News"]
+        PC["🗂️ Migrated Allianz PC Tables<br/>10 P&C reference tables"]
+    end
+
+    subgraph LANDING["🗄️ Bronze Landing Volume<br/>/Volumes/.../landing/external/"]
+        VOL["📁 feed/.parq Volume files"]
+    end
+
+    subgraph SCRIPTS["⚙️ Ingestion Scripts"]
+        SCR["external_feeds.py<br/>ingest_external.py<br/>merge_allianz_pc.py"]
+    end
+
+    subgraph BRONZE["🥉 Bronze Tables (Raw)"]
+        B_CORE["policies_raw · claims_raw<br/>premiums_raw · customers_raw<br/>geography_raw · asset_portfolio_raw"]
+        B_EXT["weather_obs_raw · noaa_alerts_raw<br/>catastrophe_*_raw · earthquakes_raw<br/>news_raw"]
+        B_PC["pc_policies_raw · pc_claims_raw<br/>pc_invest_*_raw"]
+    end
+
+    subgraph SILVER["🥈 Silver Tables (Curated)"]
+        S_CORE["dim_policy · fact_claim · fact_premium<br/>dim_customer · dim_geography · dim_asset"]
+        S_EXT["weather_obs · noaa_alerts<br/>catastrophe_* · earthquake_* · news_events"]
+        S_PC["pc_policies · pc_combined_*<br/>pc_solvency_* · pc_loss_dev"]
+    end
+
+    subgraph GOLD["🥇 Gold Marts"]
+        G_MARTS["underwriting_kpis · claims_summary<br/>exposure_accumulation · solvency_capital<br/>asset_portfolio_summary · reinsurance_summary<br/>event_risk_correlation · cat_event_pml"]
+        G_360["⊕ policy_customer_360<br/>⊕ claim_360<br/>loss_ratio_by_segment<br/>book_health · peril_loss_summary"]
+    end
+
+    SYNTH -- "direct write" --> B_CORE
+    METEO --> VOL
+    NOAA --> VOL
+    USGS --> VOL
+    GDACS --> VOL
+    RELIEF --> VOL
+    VOL --> SCR
+    SCR --> B_EXT
+    PC -- "merge_allianz_pc.py" --> B_PC
+
+    B_CORE --> S_CORE
+    B_EXT --> S_EXT
+    B_PC --> S_PC
+
+    S_CORE --> G_MARTS
+    S_EXT --> G_MARTS
+    S_PC --> G_MARTS
+    S_CORE --> G_360
+    S_EXT --> G_360
