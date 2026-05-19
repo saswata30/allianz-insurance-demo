@@ -23,10 +23,10 @@ NL Q&A and an AI/BI dashboard. Packaged as a Databricks Asset Bundle.
 ## Architecture
 
 <p align="center">
-  <img src="docs/diagrams/architecture.svg" alt="Allianz Insurance Intelligence — Lakehouse data flow" width="100%">
+  <img src="docs/diagrams/architecture.png" alt="Allianz Insurance Intelligence — Lakehouse data flow" width="100%">
 </p>
 
-Source: [`docs/diagrams/architecture.mmd`](docs/diagrams/architecture.mmd) (Mermaid).
+Source: [`docs/diagrams/architecture.mmd`](docs/diagrams/architecture.mmd) (Mermaid). See [`architecture.svg`](docs/diagrams/architecture.svg) for the vector version.
 
 <details>
 <summary>ASCII view</summary>
