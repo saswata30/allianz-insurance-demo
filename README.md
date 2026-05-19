@@ -6,6 +6,14 @@ weather + catastrophe feeds into a UC volume, ingests them into bronze, runs a
 Lakeflow Declarative Pipeline through silver to gold, exposes a Genie Space for
 NL Q&A and an AI/BI dashboard. Packaged as a Databricks Asset Bundle.
 
+## Executive Summary
+
+For the customer-facing story tying this demo to a P&C VP's charter on loss
+ratio, claims, and risk, see [`docs/EXECUTIVE_SUMMARY.md`](docs/EXECUTIVE_SUMMARY.md).
+It walks through a real-world anomaly scenario in the US Commercial Property
+book and quantifies the impact across three pillars: **Loss Ratio**, **Claims**,
+and **Risk**.
+
 ## Live Resources
 
 | Resource    | URL                                                                                                                                                                  |
